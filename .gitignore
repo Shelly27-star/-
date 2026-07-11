@@ -1,0 +1,9 @@
+.trae/
+.tmp/
+.DS_Store
+node_modules/
+.vercel/
+*.log
+.npm-cache/
+.tmp/
+*.tgz
