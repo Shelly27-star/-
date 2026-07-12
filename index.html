@@ -7060,7 +7060,7 @@ async function startDiagnosis() {
   }
   window.addMessage('🧭 欢迎进入 5 域认知扫描。我会用 5 道题了解你的思维偏好，没有对错之分，选你真实的直觉就好。', false);
   try {
-    const res = await Promise.resolve({ok:true, json: () => Promise.resolve(window.__QUIZ_DATA__ || [])}));
+    const res = await Promise.resolve({ok:true, json: () => Promise.resolve(window.__QUIZ_DATA__ || [])});
     diagState.quiz = await res.json();
   } catch (e) {
     window.addMessage('⚠️ 诊断题库加载失败，请检查 ', false, true);
