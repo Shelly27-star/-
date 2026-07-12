@@ -1216,6 +1216,69 @@ html, body {
   color: #a06060;
 }
 
+/* 知识图谱样式 */
+.cognitive-map-graph {
+  position: relative;
+  width: 100%;
+  max-width: 540px;
+  margin: 0 auto;
+}
+
+.cognitive-map-graph svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.graph-node-circle {
+  cursor: pointer;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  transform-origin: center;
+  transform-box: fill-box;
+}
+
+.graph-node-circle:hover {
+  opacity: 0.8;
+  transform: scale(1.25);
+}
+
+.graph-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  justify-content: center;
+  margin-top: 14px;
+  font-size: 12px;
+  color: #888;
+}
+
+.graph-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.graph-legend-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.graph-tooltip {
+  position: absolute;
+  background: rgba(40, 40, 40, 0.92);
+  color: #fff;
+  font-size: 12px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  pointer-events: none;
+  z-index: 100;
+  white-space: nowrap;
+  transform: translate(-50%, -130%);
+  transition: opacity 0.15s;
+}
+
 .result-actions {
   display: flex;
   gap: 12px;
@@ -3292,8 +3355,9 @@ body.energy-low { background: #F8F6FC; }
         </div>
 
         <div class="cognitive-map">
-          <h3 class="subsection-title">认知状态</h3>
-          <div id="map-nodes"></div>
+          <h3 class="subsection-title">认知图谱</h3>
+          <p style="font-size:13px;color:#999;margin-bottom:12px;">圆点 = 知识节点，连线 = 关联关系。点击节点可前往学习。</p>
+          <div class="cognitive-map-graph" id="map-nodes"></div>
         </div>
 
         <div class="result-actions">
@@ -3311,10 +3375,34 @@ body.energy-low { background: #F8F6FC; }
           <p class="section-desc">根据当前精力状态自动匹配难度：精力充沛推送深度思辨题，状态正常推送标准理解题，略有疲惫推送轻量记忆题</p>
         </div>
 
+        <!-- 回扫验证提示（完成3个节点后显示） -->
+        <div id="rescan-prompt" style="display:none;background:linear-gradient(135deg,#FFF8F0,#FAF0E0);border:2px solid #D4A574;border-radius:12px;padding:16px 20px;margin-bottom:16px;">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <span style="font-size:28px;">🎯</span>
+            <div style="flex:1;">
+              <div style="font-size:15px;font-weight:700;color:#8B5E1A;">认知提升验证</div>
+              <div style="font-size:13px;color:#998866;margin-top:4px;">你已完成 <strong id="rescan-completed-count">3</strong> 个节点，回到扫描页重新测试，看看你的认知画像是否提升了</div>
+            </div>
+            <button class="btn-primary" onclick="gotoRescan()" style="padding:8px 18px;font-size:14px;white-space:nowrap;">前往回扫 →</button>
+          </div>
+        </div>
+
+        <!-- 学习路径推荐（完成节点后显示） -->
+        <div id="next-node-prompt" style="display:none;background:rgba(90,154,143,0.08);border:1px solid #5A9A8F;border-radius:12px;padding:14px 20px;margin-bottom:16px;">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <span style="font-size:24px;">🔗</span>
+            <div style="flex:1;">
+              <div style="font-size:14px;font-weight:600;color:#4A6B5E;">学习路径推荐</div>
+              <div style="font-size:13px;color:#666;margin-top:4px;" id="next-node-text"></div>
+            </div>
+            <button class="btn-secondary" onclick="gotoNextNode()" style="padding:8px 16px;font-size:13px;white-space:nowrap;border-color:#5A9A8F;color:#5A9A8F;">前往学习 →</button>
+          </div>
+        </div>
+
         <!-- 书籍总览（顶部，默认折叠） -->
         <div class="books-overview collapsed" id="books-overview">
           <div class="books-overview-header" onclick="toggleBooksOverview()">
-            <h3>📚 五领域 17 本对应书籍</h3>
+            <h3>📚 五领域 25 本对应书籍</h3>
             <span class="books-overview-toggle">▼</span>
           </div>
           <div class="books-overview-body" id="books-overview-body"><div class="books-domain-block"><h4>政治学 · 4 本</h4><ul><li>《毛泽东选集》 — 毛泽东</li><li>《资治通鉴》 — 司马光</li><li>《君主论》 — 尼科洛·马基雅维利</li><li>《社会契约论》 — 让-雅克·卢梭</li></ul></div><div class="books-domain-block"><h4>军事学 · 3 本</h4><ul><li>《孙子兵法》 — 孙武</li><li>《论持久战》 — 毛泽东</li><li>《战争论》 — 卡尔·冯·克劳塞维茨</li></ul></div><div class="books-domain-block"><h4>历史学 · 3 本</h4><ul><li>《史记》 — 司马迁</li><li>《全球通史》 — 斯塔夫里阿诺斯</li><li>《人类简史》 — 尤瓦尔·赫拉利</li></ul></div><div class="books-domain-block"><h4>哲学 · 3 本</h4><ul><li>《易经》 — 佚名</li><li>《道德经》 — 老子</li><li>《阳明心学》 — 王阳明</li></ul></div><div class="books-domain-block"><h4>金融学 · 4 本</h4><ul><li>《底层逻辑》 — 刘润</li><li>《财务自由原则》 — 博多·舍费尔</li><li>《解读中国经济》 — 厉以宁</li><li>《涛动周期论》 — 周金涛</li></ul></div></div>
@@ -4382,6 +4470,636 @@ body.energy-low { background: #F8F6FC; }
       }
     ],
     "energyMeta": "深度思辨型"
+  },
+  {
+    "id": "pol-power-dynamics",
+    "domain": "politics",
+    "domainName": "政治学",
+    "title": "权力的多面性",
+    "level": "入门",
+    "duration": 3,
+    "energy": "low",
+    "core": "权力不只是强制。它可以是议程设置（决定什么能被讨论）、信息控制、符号权威，甚至是一种“不被打扰”的能力。福柯说权力无处不在，渗透在课堂、医院、监狱的每一道设计里——理解权力的多面性，才能看清规则背后的真正博弈。",
+    "scenario": "公司里谁能进核心会议、谁的邮件被抄送、谁有“约老板喝咖啡”的资格——这些细节比职位高低更能说明真实权力分布。",
+    "upgrade": "以后看一个组织的权力结构，不再只看组织架构图，而是看谁在定议程、谁掌握信息流、谁能不动声色地让事情发生或不发生。",
+    "probes": [
+      "议程设置",
+      "信息不对称",
+      "符号权力",
+      "福柯",
+      "隐性权威"
+    ],
+    "topic": "为什么有些人没有头衔，却比有头衔的人更有“权力”？",
+    "followUp": "如果让你画一张“你所在团队的真实权力地图”，你会怎么画？",
+    "questions": [
+      "福柯说“权力无处不在”，你觉得学校里有哪些隐蔽的权力运作？",
+      "议程设置权为什么比决策权更重要？"
+    ],
+    "books": [
+      {
+        "title": "《资治通鉴》",
+        "author": "司马光",
+        "whyRead": "历代权力运作案例展示了议程设置与信息控制如何决定政治走向。"
+      },
+      {
+        "title": "《君主论》",
+        "author": "尼科洛·马基雅维利",
+        "whyRead": "赤裸裸剖析权力获取与维持的多面手段，帮你识别权力的隐性形态。"
+      }
+    ],
+    "energyMeta": "轻量记忆型"
+  },
+  {
+    "id": "pol-civic-virtue",
+    "domain": "politics",
+    "domainName": "政治学",
+    "title": "公民美德与民主",
+    "level": "进阶",
+    "duration": 5,
+    "energy": "normal",
+    "core": "民主不只是投票制度，更是公民习惯的总和。托克维尔观察美国时发现，民主的真正基础是乡镇自治和小规模结社——人们在管理公共事务中学会合作、妥协和责任。没有“结社的艺术”，民主制度会蜕化为原子化个人的投票游戏，最终被民粹或寡头收编。",
+    "scenario": "一个小区业主群里，但凡有人发起集体行动，总有人冷嘲热讽“又来搞事”。久而久之，愿意组织的人越来越少，物业可以随意涨价。民主死于冷漠，而非暴政。",
+    "upgrade": "以后判断一个社会的民主质量，不只看制度设计，更看日常的结社密度、公共讨论质量和“愿意为公共事务花时间”的人的比例。",
+    "probes": [
+      "托克维尔",
+      "结社艺术",
+      "公民参与",
+      "乡镇自治",
+      "民主质量"
+    ],
+    "topic": "为什么有的民主国家制度健全，社会却越来越撕裂？",
+    "followUp": "你所在的社区或公司，“结社密度”如何？你愿意为公共事务花多少时间？",
+    "questions": [
+      "托克维尔说“结社是民主的学校”，你怎么理解这句话？",
+      "互联网时代，线上社群能替代线下结社吗？"
+    ],
+    "books": [
+      {
+        "title": "《论自由》",
+        "author": "约翰·密尔",
+        "whyRead": "系统论证个人自由与社会权力的边界，是理解公民参与与民主质量的基石。"
+      },
+      {
+        "title": "《社会契约论》",
+        "author": "让-雅克·卢梭",
+        "whyRead": "从集体行动与合法权力来源出发，帮你理解公民美德对民主运转的决定性作用。"
+      },
+      {
+        "title": "《毛泽东选集》",
+        "author": "毛泽东",
+        "whyRead": "土改和整风运动展示了如何通过组织设计重塑群体参与，是公民动员的现实范本。"
+      }
+    ],
+    "energyMeta": "标准型"
+  },
+  {
+    "id": "pol-international-order",
+    "domain": "politics",
+    "domainName": "政治学",
+    "title": "国际秩序与博弈",
+    "level": "进阶",
+    "duration": 10,
+    "energy": "high",
+    "core": "国际秩序是无政府状态下的博弈：没有世界政府，国家只能靠自助。修昔底德陷阱说新兴大国必然挑战守成大国，但历史证明战争并非必然。理解国际秩序，要看到权力、利益、规范三层结构——硬实力博弈是表层，规则制定权和叙事权才是深层。",
+    "scenario": "中美贸易摩擦里，关税是表象，真正在博弈的是半导体标准、数字货币结算体系和AI治理规则。谁定义下一代规则，谁就锁定未来三十年的格局。",
+    "upgrade": "以后看国际新闻，不再只看事件本身，而是追问“这件事在改变哪一层规则？权力、利益还是规范？谁在定议程？”——这是看懂国际政治的认知升维。",
+    "probes": [
+      "修昔底德陷阱",
+      "无政府状态",
+      "权力转移",
+      "规则制定权",
+      "叙事权"
+    ],
+    "topic": "中美竞争的本质是制度之争，还是规则之争？",
+    "followUp": "如果你是某个中等国家的外交顾问，在大国博弈中你会选择站队、对冲还是中立？为什么？",
+    "questions": [
+      "修昔底德陷阱是必然的吗？历史上有没有和平转移的案例？",
+      "国际规范真的能约束大国行为吗？"
+    ],
+    "books": [
+      {
+        "title": "《资治通鉴》",
+        "author": "司马光",
+        "whyRead": "历代中原王朝与周边政权的博弈案例，提供权力转移与规则制定的历史维度对照。"
+      },
+      {
+        "title": "《君主论》",
+        "author": "尼科洛·马基雅维利",
+        "whyRead": "赤裸裸的权力博弈逻辑，帮你穿透国际秩序话语看到利益与权力的底层运作。"
+      },
+      {
+        "title": "《毛泽东选集》",
+        "author": "毛泽东",
+        "whyRead": "三个世界划分理论是中国视角的国际秩序分析，理解中等国家在大国博弈中的策略选择。"
+      }
+    ],
+    "energyMeta": "深度思辨型"
+  },
+  {
+    "id": "mil-ooda-loop",
+    "domain": "military",
+    "domainName": "军事学",
+    "title": "OODA循环",
+    "level": "入门",
+    "duration": 5,
+    "energy": "normal",
+    "core": "OODA循环是战斗机飞行员博伊德提出的决策模型：Observe观察→Orient判断→Decide决策→Act行动，然后回到观察。关键不是哪一步更重要，而是循环速度——谁循环得快，谁就把对手拖进“决策瘫痪”，让对方反应总是慢半拍。",
+    "scenario": "字节跳动靠快速A/B测试把新闻产品迭代到极致，而传统媒体还在等季度复盘。本质是OODA循环速度的差异，不是内容质量的差异。",
+    "upgrade": "以后做任何竞争性决策，先问自己“我的OODA循环速度比对手快吗？哪一步最慢？”——通常卡在Orient判断，因为旧认知框架跟不上新信息。",
+    "probes": [
+      "博伊德",
+      "决策循环",
+      "快速迭代",
+      "判断框架",
+      "决策瘫痪"
+    ],
+    "topic": "为什么“快”在竞争中比“对”更重要？",
+    "followUp": "你的工作里，OODA循环哪一步最慢？为什么？",
+    "questions": [
+      "OODA循环里，Orient（判断）为什么是最难也最关键的一步？",
+      "互联网公司的“敏捷开发”和军事OODA是同一个东西吗？"
+    ],
+    "books": [
+      {
+        "title": "《战争论》",
+        "author": "卡尔·冯·克劳塞维茨",
+        "whyRead": "系统论述战争中的摩擦与不确定性，与OODA循环对判断速度的要求形成对照。"
+      },
+      {
+        "title": "《孙子兵法》",
+        "author": "孙武",
+        "whyRead": "兵贵神速与OODA循环的“快”异曲同工，从东方视角理解决策速度的战略价值。"
+      },
+      {
+        "title": "《战略论》",
+        "author": "利德尔·哈特",
+        "whyRead": "间接路线战略与OODA循环的灵活性互为印证，帮你理解快速决策如何制造对手瘫痪。"
+      }
+    ],
+    "energyMeta": "标准型"
+  },
+  {
+    "id": "mil-deterrence",
+    "domain": "military",
+    "domainName": "军事学",
+    "title": "威慑理论",
+    "level": "进阶",
+    "duration": 5,
+    "energy": "normal",
+    "core": "威慑是“不战而屈人之兵”的艺术。有效的威慑需要三要素：能力（打得过）、决心（敢打）、可信度（对方相信你真会打）。核武器让威慑达到极致——相互确保毁灭（MAD）让大国不敢直接开战，但威慑也是脆弱的，一旦对方误判你的决心，战争反而被引爆。",
+    "scenario": "朝鲜发展核武器不是为了用，而是为了让美国相信“打我的代价你承受不起”。威慑的本质是塑造对方的预期，而不是真的开战。",
+    "upgrade": "以后看到任何“秀肌肉”行为，问自己三个问题：他在秀能力、决心还是可信度？哪一环最弱？如果对方误判，会发生什么？",
+    "probes": [
+      "相互确保毁灭",
+      "威慑三要素",
+      "误判风险",
+      "核威慑",
+      "可信度"
+    ],
+    "topic": "为什么核武器越多，大国反而越不敢开战？",
+    "followUp": "商业谈判里，“威慑”和“虚张声势”的边界在哪？怎么判断对方是真有决心还是装的？",
+    "questions": [
+      "威慑如果被对方识破是虚张声势，反而会引发战争，你怎么理解这个悖论？",
+      "网络战的威慑为什么比核威慑更难建立？"
+    ],
+    "books": [
+      {
+        "title": "《战争论》",
+        "author": "卡尔·冯·克劳塞维茨",
+        "whyRead": "战争是政治的延续，威慑正是用战争潜力而非战争本身达成政治目的的经典手段。"
+      },
+      {
+        "title": "《孙子兵法》",
+        "author": "孙武",
+        "whyRead": "不战而屈人之兵是威慑的东方源头表述，帮你理解威慑的最高境界是不战。"
+      },
+      {
+        "title": "《论持久战》",
+        "author": "毛泽东",
+        "whyRead": "持久战以时间和空间塑造意志威慑，是决心与可信度要素的中国实践案例。"
+      }
+    ],
+    "energyMeta": "标准型"
+  },
+  {
+    "id": "mil-cyber-warfare",
+    "domain": "military",
+    "domainName": "军事学",
+    "title": "网络战与新域",
+    "level": "进阶",
+    "duration": 10,
+    "energy": "high",
+    "core": "战争正在从物理域扩展到网络、太空、认知域。网络战没有宣战、没有前线、没有和平与战争的清晰边界——攻击可能在几年前就潜伏在关键基础设施里。这种“灰色地带冲突”模糊了军民界限，让传统的威慑和战争法都面临重塑。",
+    "scenario": "震网病毒瘫痪伊朗核设施，没有一兵一卒越过边境，却比轰炸更精准。未来战争的第一枪，可能不是导弹，而是一段潜伏三年的代码。",
+    "upgrade": "以后理解国家安全，不再只看军队规模，而要看关键基础设施的代码审计、供应链安全和“数字主权”——网络空间的失守意味着物理防线的瓦解。",
+    "probes": [
+      "灰色地带",
+      "震网病毒",
+      "关键基础设施",
+      "供应链攻击",
+      "认知域"
+    ],
+    "topic": "未来战争的第一枪会是什么形态？",
+    "followUp": "如果一段恶意代码潜伏在你用的水电系统里三年没被发现，这算不算“已经被占领”？",
+    "questions": [
+      "网络战为什么让传统威慑理论失效？",
+      "军民融合时代，如何区分民用目标和军事目标？"
+    ],
+    "books": [
+      {
+        "title": "《战争论》",
+        "author": "卡尔·冯·克劳塞维茨",
+        "whyRead": "战争是政治延续的底层逻辑在新域战争中被重新激活，帮你理解网络战的战略本质。"
+      },
+      {
+        "title": "《海权论》",
+        "author": "阿尔弗雷德·马汉",
+        "whyRead": "制海权理论延伸到制网权，帮你理解新域控制权对国家兴衰的决定作用。"
+      },
+      {
+        "title": "《战略论》",
+        "author": "利德尔·哈特",
+        "whyRead": "间接路线战略在网络战中表现为潜伏与不对称攻击，是理解灰色地带冲突的钥匙。"
+      }
+    ],
+    "energyMeta": "深度思辨型"
+  },
+  {
+    "id": "hist-civilization-cycle",
+    "domain": "history",
+    "domainName": "历史学",
+    "title": "文明兴衰律",
+    "level": "入门",
+    "duration": 5,
+    "energy": "normal",
+    "core": "汤因比研究26个文明后提出“挑战-应战”模型：文明诞生于对环境挑战的成功应战，衰亡于内部“创造性少数”蜕化为“统治少数”。不是外敌摧毁文明，而是文明先丧失了应对挑战的创造力，外敌只是收割者。衰落始于内部僵化。",
+    "scenario": "罗马不是被蛮族打垮的，是先丧失了公民兵源、财政活力和政治共识，蛮族只是推了一把。所有衰落都先从内部开始。",
+    "upgrade": "以后判断一个组织、一个行业、一个国家是否在走下坡路，不看外部威胁，而看它内部还有没有“创造性少数”在挑战既定路径。",
+    "probes": [
+      "挑战应战",
+      "创造性少数",
+      "内部僵化",
+      "汤因比",
+      "衰落先兆"
+    ],
+    "topic": "文明衰落是从外部被打败，还是从内部先坏掉？",
+    "followUp": "你所在的行业，有没有出现“创造性少数”被排挤、“统治少数”固化的迹象？",
+    "questions": [
+      "汤因比的“挑战-应战”模型能解释中国历史的王朝周期吗？",
+      "为什么有些文明能跨越挑战延续千年，有些却一夜崩溃？"
+    ],
+    "books": [
+      {
+        "title": "《历史研究》",
+        "author": "阿诺德·汤因比",
+        "whyRead": "比较26个文明的兴衰规律，是文明兴衰律理论的直接源头之作。"
+      },
+      {
+        "title": "《全球通史》",
+        "author": "斯塔夫里阿诺斯",
+        "whyRead": "横跨整个人类史，提供文明兴衰的宏观对照案例，帮你验证挑战-应战模型。"
+      },
+      {
+        "title": "《人类简史》",
+        "author": "尤瓦尔·赫拉利",
+        "whyRead": "用统一框架解释文明如何应对技术与环境挑战，是理解兴衰机制的当代视角。"
+      }
+    ],
+    "energyMeta": "标准型"
+  },
+  {
+    "id": "hist-cultural-diffusion",
+    "domain": "history",
+    "domainName": "历史学",
+    "title": "文化传播",
+    "level": "入门",
+    "duration": 3,
+    "energy": "low",
+    "core": "文化不是封闭土壤里长出来的，而是流动中碰撞出来的。佛教从印度传到中国被本土化成禅宗；阿拉伯数字经阿拉伯人传到欧洲才有现代数学。传播不是简单复制，而是“翻译-误读-再创造”——错位反而催生新形态。",
+    "scenario": "拉面从中国传到日本变成拉面，再传回中国变成味千拉面。文化传播路径很少是直线，往往是循环再造。",
+    "upgrade": "以后看到一个文化现象，问自己“它从哪来？经过了哪些翻译？每次翻译丢失了什么、增加了什么？”——这是看懂文化流变的认知工具。",
+    "probes": [
+      "涵化",
+      "翻译误读",
+      "本土化",
+      "文化杂交",
+      "传播路径"
+    ],
+    "topic": "为什么“纯种文化”是个伪命题？",
+    "followUp": "你身边有没有“外来文化本土化”的有趣例子？它被改造了什么？",
+    "questions": [
+      "文化传播中的“误读”为什么反而是创新的源泉？",
+      "全球化会让文化趋同，还是会催生更多杂交形态？"
+    ],
+    "books": [
+      {
+        "title": "《全球通史》",
+        "author": "斯塔夫里阿诺斯",
+        "whyRead": "横跨整个人类史展示文化交流与碰撞如何重塑文明，是理解文化传播的宏观框架。"
+      },
+      {
+        "title": "《枪炮、病菌与钢铁》",
+        "author": "贾雷德·戴蒙德",
+        "whyRead": "从地理与环境视角解释文化传播的不对称性，打破文化传播的浪漫想象。"
+      }
+    ],
+    "energyMeta": "轻量记忆型"
+  },
+  {
+    "id": "hist-counterfactual",
+    "domain": "history",
+    "domainName": "历史学",
+    "title": "反事实推理",
+    "level": "进阶",
+    "duration": 10,
+    "energy": "high",
+    "core": "历史学家曾拒绝“如果”问题，但反事实推理其实是检验因果关系的工具。问“如果希特勒1941年没入侵苏联”，不是为了改写历史，而是为了厘清哪些因素是决定性的、哪些是偶然的。历史不是必然的剧本，而是无数分叉点上的选择叠加。",
+    "scenario": "如果1914年那颗子弹打偏，一战会爆发吗？多数分析认为仍会——同盟体系、军备竞赛、殖民矛盾早已堆好火药，萨拉热窝只是火星。反事实推理帮你分辨“火星”和“火药”。",
+    "upgrade": "以后看任何“决定性时刻”，问自己“如果这件事没发生，后续会怎样？哪些是结构必然，哪些是偶然触发？”——这能区分原因和导火索。",
+    "probes": [
+      "因果推断",
+      "偶然与必然",
+      "分叉点",
+      "结构因素",
+      "触发事件"
+    ],
+    "topic": "历史是必然的，还是偶然的？",
+    "followUp": "选一件你人生中的关键转折点反事实推演：如果它没发生，你今天会在哪？哪些是必然，哪些是偶然？",
+    "questions": [
+      "反事实推理在历史学里为什么争议很大？",
+      "如何区分历史的“结构性必然”和“偶然触发”？"
+    ],
+    "books": [
+      {
+        "title": "《历史研究》",
+        "author": "阿诺德·汤因比",
+        "whyRead": "比较26个文明的兴衰，提供区分结构性因素与偶然事件的分析框架。"
+      },
+      {
+        "title": "《史记》",
+        "author": "司马迁",
+        "whyRead": "中国历史中的关键分叉点案例，是练习反事实推理的绝佳素材库。"
+      },
+      {
+        "title": "《全球通史》",
+        "author": "斯塔夫里阿诺斯",
+        "whyRead": "全球视角下的重大转折点，帮你区分结构必然与偶然触发。"
+      }
+    ],
+    "energyMeta": "深度思辨型"
+  },
+  {
+    "id": "phi-ethics",
+    "domain": "philosophy",
+    "domainName": "哲学",
+    "title": "伦理困境",
+    "level": "入门",
+    "duration": 5,
+    "energy": "normal",
+    "core": "伦理学有三大流派：功利主义看结果（最大多数人的最大幸福）、义务论看动机（有些事不管结果如何都不能做，比如杀一救五）、美德伦理看品格（成为什么样的人）。电车难题不是要找答案，而是暴露你在不同原则间的真实取舍。",
+    "scenario": "自动驾驶撞了人，该优先保护车内乘客还是路人？这不是技术问题，是功利主义和义务论的百年之争被算法化了。",
+    "upgrade": "以后做道德判断，先问自己“我在用哪一派的标准？换一派会得出什么结论？”——道德成熟不是选一个站队，而是知道每种立场牺牲了什么。",
+    "probes": [
+      "功利主义",
+      "义务论",
+      "美德伦理",
+      "电车难题",
+      "道德直觉"
+    ],
+    "topic": "杀一救五，到底该不该做？",
+    "followUp": "如果让你给自动驾驶写道德算法，你会优先保护谁？这个选择背后是哪一派伦理？",
+    "questions": [
+      "为什么不同文化在电车难题上的直觉差异这么大？",
+      "美德伦理和功利主义能兼容吗？"
+    ],
+    "books": [
+      {
+        "title": "《阳明心学》",
+        "author": "王阳明",
+        "whyRead": "知行合一从中国哲学视角回应了道德判断与行动的统一，与西方义务论形成对照。"
+      },
+      {
+        "title": "《道德经》",
+        "author": "老子",
+        "whyRead": "道法自然提供超越功利与义务二元对立的第三种伦理视角，帮你跳出非此即彼。"
+      },
+      {
+        "title": "《理想国》",
+        "author": "柏拉图",
+        "whyRead": "西方伦理学源头，通过正义之辩探讨何为善的生活，是理解三大流派的起点。"
+      }
+    ],
+    "energyMeta": "标准型"
+  },
+  {
+    "id": "phi-free-will",
+    "domain": "philosophy",
+    "domainName": "哲学",
+    "title": "自由意志",
+    "level": "进阶",
+    "duration": 10,
+    "energy": "high",
+    "core": "如果大脑是物理过程，神经元放电遵循因果律，那“自由意志”是幻觉吗？相容论说：自由不是摆脱因果，而是“按自己的理由行动”——被强迫症患者和被枪指着的人都不自由，但清醒选择的人是自由的，哪怕这个选择本身有因果链。问题被重新定义了，而非被解决。",
+    "scenario": "神经科学实验显示，大脑在“你决定动手指”前几百毫秒就已发出信号。这是否证明你的“决定”只是事后给自己讲的故事？",
+    "upgrade": "以后纠结“我到底有没有自由”，不再陷入非此即彼，而是问“在什么条件下我的选择是自由的？”——答案关乎自我认知、责任归属和制度设计。",
+    "probes": [
+      "决定论",
+      "相容论",
+      "神经科学",
+      "责任归属",
+      "意识幻觉"
+    ],
+    "topic": "如果你的每个决定都是神经元早就决定的，你还有自由意志吗？",
+    "followUp": "如果自由意志是幻觉，法律惩罚还有意义吗？相容论能回答这个难题吗？",
+    "questions": [
+      "相容论是真正的解答，还是偷换概念？",
+      "如果AI有了意识，它能拥有自由意志吗？"
+    ],
+    "books": [
+      {
+        "title": "《西方哲学史》",
+        "author": "伯特兰·罗素",
+        "whyRead": "系统梳理决定论与自由意志之争的哲学脉络，帮你建立完整的思辨坐标系。"
+      },
+      {
+        "title": "《阳明心学》",
+        "author": "王阳明",
+        "whyRead": "知行合一从内在意识视角回应自由意志问题，与西方相容论形成东方对照。"
+      },
+      {
+        "title": "《易经》",
+        "author": "佚名",
+        "whyRead": "变易思维对“必然与自由”保持开放，是反思决定论与自由的东方智慧源头。"
+      }
+    ],
+    "energyMeta": "深度思辨型"
+  },
+  {
+    "id": "phi-aesthetics",
+    "domain": "philosophy",
+    "domainName": "哲学",
+    "title": "审美与意义",
+    "level": "入门",
+    "duration": 3,
+    "energy": "low",
+    "core": "为什么我们觉得日落美、对称脸美、悲剧也美？康德说审美是“无目的的合目的性”——既不像欲望那样要占有，也不像逻辑那样要证明，而是纯粹的愉悦。美指向一种超越功利的意义感，是人之为人的标志。",
+    "scenario": "同一幅画有人觉得震撼，有人觉得无聊。审美趣味不是天生的，而是文化、教育和生命经验的沉淀——你觉得美，其实是你的经验在共鸣。",
+    "upgrade": "以后面对艺术“看不懂”时，不再急于否定，而是问“它激活了我哪部分经验？为什么没激活？”——审美是认识自己的镜子。",
+    "probes": [
+      "无目的的合目的性",
+      "崇高",
+      "审美趣味",
+      "康德",
+      "意义感"
+    ],
+    "topic": "为什么我们觉得悲剧也“美”？",
+    "followUp": "你最近一次被艺术“击中”是什么时候？那件作品激活了你什么？",
+    "questions": [
+      "审美是主观的还是存在普遍标准？",
+      "AI生成的画作能算艺术吗？"
+    ],
+    "books": [
+      {
+        "title": "《道德经》",
+        "author": "老子",
+        "whyRead": "大音希声、大象无形从东方视角呼应审美的超越性，与康德美学形成对照。"
+      },
+      {
+        "title": "《理想国》",
+        "author": "柏拉图",
+        "whyRead": "通过洞穴寓言探讨美与真实的关系，是西方审美哲学的源头之作。"
+      }
+    ],
+    "energyMeta": "轻量记忆型"
+  },
+  {
+    "id": "fin-monetary-system",
+    "domain": "finance",
+    "domainName": "金融学",
+    "title": "货币本质",
+    "level": "入门",
+    "duration": 5,
+    "energy": "normal",
+    "core": "货币不是金银，是“普遍接受的信任”。从贝壳到纸币到数字货币，形态在变，本质未变——它是一套关于“谁欠谁什么”的记账系统。现代货币本质是国家信用背书的流通工具，央行是“最后的信任提供者”——理解货币就理解了信用。",
+    "scenario": "一杯咖啡在便利店15元、在机场38元、在米其林餐厅80元。同样咖啡因，价格差在哪？在“信任场景”和“信用溢价”——货币的购买力因场景而变。",
+    "upgrade": "以后看到任何“价格”，先问“这个价格里有多少是商品价值，多少是信用溢价，多少是场景信任？”——价格是信任的可视化。",
+    "probes": [
+      "信用本位",
+      "法定货币",
+      "央行",
+      "货币乘数",
+      "信任溢价"
+    ],
+    "topic": "为什么一张纸能换一袋米？",
+    "followUp": "如果央行无限印钞，“信任”会怎么崩塌？历史上有哪些例子？",
+    "questions": [
+      "比特币能成为真正的货币吗？它缺了什么？",
+      "为什么一些国家货币稳定，一些国家动辄恶性通胀？"
+    ],
+    "books": [
+      {
+        "title": "《解读中国经济》",
+        "author": "厉以宁",
+        "whyRead": "中国市场中的货币与信用案例，帮你理解信用本位在本土语境下的运作逻辑。"
+      },
+      {
+        "title": "《财富自由原则》",
+        "author": "博多·舍费尔",
+        "whyRead": "用具体数字演示货币的时间价值与信用杠杆，是理解货币本质的实践入口。"
+      },
+      {
+        "title": "《底层逻辑》",
+        "author": "刘润",
+        "whyRead": "用商业案例拆解信用溢价与场景信任，帮你看到价格背后的货币逻辑。"
+      }
+    ],
+    "energyMeta": "标准型"
+  },
+  {
+    "id": "fin-valuation",
+    "domain": "finance",
+    "domainName": "金融学",
+    "title": "估值思维",
+    "level": "进阶",
+    "duration": 10,
+    "energy": "high",
+    "core": "估值不是算出一个“准确数字”，而是建立一套关于未来的假设体系。DCF（现金流折现）的本质是“把未来所有现金流折算回今天”，但折现率里藏着对风险、时间、机会成本的全部判断。两个聪明人对同一家公司估值差三倍，差的不是计算，是假设。",
+    "scenario": "同一家公司，乐观派看到TAM（总可寻址市场）万亿，悲观派看到现金流永远为负。估值差三倍不是谁算错了，是双方对未来的“信念”不同——市场是信念的加权平均。",
+    "upgrade": "以后看到任何估值，先不问“算得对不对”，而问“他用了什么假设？这个假设有多脆弱？”——估值是假设的艺术，不是计算的工程。",
+    "probes": [
+      "DCF",
+      "折现率",
+      "风险溢价",
+      "相对估值",
+      "假设体系"
+    ],
+    "topic": "为什么两家投行对同一家公司的估值能差三倍？",
+    "followUp": "如果让你给一家“亏损但增长快”的公司估值，你会用哪种方法？关键假设是什么？",
+    "questions": [
+      "DCF模型在亏损的科技公司上为什么经常失效？",
+      "相对估值法和绝对估值法各自的盲区在哪？"
+    ],
+    "books": [
+      {
+        "title": "《财务自由之路》",
+        "author": "博多·舍费尔",
+        "whyRead": "从欧洲理财教练视角拆解估值与复利的关系，帮你理解时间价值在估值中的核心作用。"
+      },
+      {
+        "title": "《财富自由原则》",
+        "author": "博多·舍费尔",
+        "whyRead": "用具体数字演示估值中的折现思维，是理解DCF假设体系的实践入口。"
+      },
+      {
+        "title": "《底层逻辑》",
+        "author": "刘润",
+        "whyRead": "用商业案例拆解估值假设的脆弱性，帮你识别不同估值背后的信念差异。"
+      }
+    ],
+    "energyMeta": "深度思辨型"
+  },
+  {
+    "id": "fin-economic-cycle",
+    "domain": "finance",
+    "domainName": "金融学",
+    "title": "经济周期",
+    "level": "进阶",
+    "duration": 5,
+    "energy": "normal",
+    "core": "经济周期是繁荣-衰退-复苏的循环，但不同周期长度不同：基钦周期约40个月（库存）、朱格拉周期约10年（设备投资）、康波周期约50-60年（技术革命）。理解周期不是预测时点，而是判断“当前处于周期的什么位置”，从而决定是该扩张还是防守。",
+    "scenario": "2021年所有人谈“永远涨”，2022年变成“周期顶”。其实周期一直都在，只是乐观时被遗忘、悲观时被放大——周期的本质是人性的钟摆。",
+    "upgrade": "以后做任何长期决策，先问“我处于哪个周期的什么位置？”——是库存周期的顶部、设备投资周期的底部，还是技术周期的起点？位置决定策略。",
+    "probes": [
+      "基钦周期",
+      "朱格拉周期",
+      "康波周期",
+      "钟摆效应",
+      "库存周期"
+    ],
+    "topic": "经济周期是必然的，还是可以被熨平？",
+    "followUp": "你判断当下经济处于什么周期的什么位置？基于什么信号？",
+    "questions": [
+      "康波周期真的存在吗，还是后视镜里的模式识别？",
+      "央行能真正熨平经济周期吗？"
+    ],
+    "books": [
+      {
+        "title": "《解读中国经济》",
+        "author": "厉以宁",
+        "whyRead": "中国市场中的周期波动案例，帮你识别本土经济周期的特殊性与政策传导链。"
+      },
+      {
+        "title": "《贫穷的本质》",
+        "author": "阿比吉特·班纳吉",
+        "whyRead": "从微观视角解释周期对穷人的不对称冲击，理解经济周期的真实代价。"
+      },
+      {
+        "title": "《底层逻辑》",
+        "author": "刘润",
+        "whyRead": "用商业案例拆解周期位置与策略选择的关系，帮你把周期判断转化为行动。"
+      }
+    ],
+    "energyMeta": "标准型"
   }
 ];</script>
   <script>window.__QUIZ_DATA__ = {
@@ -5818,16 +6536,17 @@ function analyzeFallback() {
 function showAnalysisResult(result) {
   document.getElementById('analysis-overall').textContent = result.overall || '分析完成';
 
-  // 显示盲区描述（优化格式）
+  // 显示盲区描述 + 立即学习按钮
   const blindspotsList = document.getElementById('blindspots-list');
   blindspotsList.innerHTML = '';
+  const suggestedNodeId = result.suggestedNode;
   (result.blindSpots || []).forEach(spot => {
     const li = document.createElement('li');
-    // 确保 blindSpots 格式为 "你在'XXX'维度存在认知空白"
-    if (!spot.includes('你在') && !spot.includes('维度存在认知空白')) {
+    li.style.cssText = 'display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #f0f0f0;';
+    if (!spot.includes('你在') && !spot.includes('维度存在认知空白') && !spot.includes('理解不足')) {
       spot = `你在 '${spot}' 维度存在认知空白`;
     }
-    li.textContent = spot;
+    li.innerHTML = `<span style="flex:1;font-size:14px;">${spot}</span><button class="btn-link" onclick="learnBlindSpot('${suggestedNodeId}')" style="padding:4px 12px;font-size:13px;color:#D4A574;border:1px solid #D4A574;border-radius:6px;background:transparent;cursor:pointer;white-space:nowrap;">立即学习 →</button>`;
     blindspotsList.appendChild(li);
   });
 
@@ -5837,6 +6556,23 @@ function showAnalysisResult(result) {
   renderCognitiveMap(result.suggestedNode);
 
   window.showScreen('scanner-result');
+}
+
+function learnBlindSpot(nodeId) {
+  if (!nodeId) return;
+  window.showScreen('feeder');
+  setTimeout(() => {
+    if (window.selectEnergy) window.selectEnergy('normal');
+    setTimeout(() => {
+      const card = document.querySelector(`.node-card[data-node-id="${nodeId}"]`);
+      if (card) {
+        card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        card.style.transition = 'box-shadow 0.4s';
+        card.style.boxShadow = '0 0 0 4px #D4A574';
+        setTimeout(() => { card.style.boxShadow = ''; }, 3000);
+      }
+    }, 600);
+  }, 300);
 }
 
 function renderProbesStatus(probesHit) {
@@ -5870,47 +6606,187 @@ function renderProbesStatus(probesHit) {
 function renderCognitiveMap(suggestedNodeId) {
   const mapContainer = document.getElementById('map-nodes');
   const cognitiveMap = JSON.parse(localStorage.getItem('cognitiveMap') || '{}');
+  const nodes = knowledgeData.filter(n => !n._config);
 
-  mapContainer.innerHTML = '';
+  // 领域配置：颜色 + 角度位置（五角形分布）
+  const domains = [
+    { key: 'politics',   name: '政治学', color: '#D4A574', angle: -90 },
+    { key: 'military',   name: '军事学', color: '#8B5E3A', angle: -18 },
+    { key: 'history',    name: '历史学', color: '#7A6B5D', angle: 54 },
+    { key: 'philosophy', name: '哲学',   color: '#5A9A8F', angle: 126 },
+    { key: 'finance',    name: '金融学', color: '#8A7EB5', angle: 198 }
+  ];
 
-  knowledgeData.forEach(node => {
-    const status = cognitiveMap[node.id]?.status || 'blank';
-    const isSuggested = node.id === suggestedNodeId;
+  const W = 540, H = 540;
+  const cx = W / 2, cy = H / 2;
+  const domainR = 175;
+  const nodeOffset = 48;
+  const nodeRadius = 13;
 
-    const nodeDiv = document.createElement('div');
-    nodeDiv.className = `map-node`;
+  // 计算每个节点的坐标
+  const posMap = {};
+  domains.forEach(d => {
+    const dNodes = nodes.filter(n => n.domain === d.key);
+    const dAngle = (d.angle * Math.PI) / 180;
+    const dx = cx + domainR * Math.cos(dAngle);
+    const dy = cy + domainR * Math.sin(dAngle);
 
-    let domainClass = '';
-    switch (node.domain) {
-      case 'politics': domainClass = 'politics'; break;
-      case 'military': domainClass = 'military'; break;
-      case 'history': domainClass = 'history'; break;
-      case 'philosophy': domainClass = 'philosophy'; break;
-      case 'finance': domainClass = 'finance'; break;
+    dNodes.forEach((node, i) => {
+      const nAngle = ((i * 60 - 90) * Math.PI) / 180;
+      posMap[node.id] = {
+        x: dx + nodeOffset * Math.cos(nAngle),
+        y: dy + nodeOffset * Math.sin(nAngle),
+        dx, dy,
+        domain: d.key,
+        domainColor: d.color,
+        domainName: d.name,
+        title: node.title,
+        status: cognitiveMap[node.id]?.status || 'blank'
+      };
+    });
+  });
+
+  // 计算跨领域关联（共享探针关键词）
+  const crossLinks = [];
+  for (let i = 0; i < nodes.length; i++) {
+    for (let j = i + 1; j < nodes.length; j++) {
+      if (nodes[i].domain !== nodes[j].domain) {
+        const shared = (nodes[i].probes || []).filter(p => (nodes[j].probes || []).includes(p));
+        if (shared.length > 0) {
+          crossLinks.push({ from: nodes[i].id, to: nodes[j].id, weight: shared.length });
+        }
+      }
     }
+  }
 
-    let statusLabel = '';
-    switch (status) {
-      case 'established': statusLabel = '已建立'; break;
-      case 'consolidate': statusLabel = '需巩固'; break;
-      default: statusLabel = '空白'; break;
+  // 构建 SVG
+  let svgParts = [];
+
+  // 1) 中心圆 + 标签
+  svgParts.push(`<circle cx="${cx}" cy="${cy}" r="24" fill="none" stroke="#E0D8CC" stroke-width="1.5"/>`);
+  svgParts.push(`<text x="${cx}" y="${cy + 4}" text-anchor="middle" font-size="11" fill="#aaa" font-weight="500">认知图谱</text>`);
+
+  // 2) 领域中心到中心的虚线 + 领域标签
+  domains.forEach(d => {
+    const a = (d.angle * Math.PI) / 180;
+    const dx = cx + domainR * Math.cos(a);
+    const dy = cy + domainR * Math.sin(a);
+    svgParts.push(`<line x1="${cx}" y1="${cy}" x2="${dx}" y2="${dy}" stroke="${d.color}" stroke-width="1" opacity="0.12" stroke-dasharray="4,4"/>`);
+    const labelX = cx + (domainR + 38) * Math.cos(a);
+    const labelY = cy + (domainR + 38) * Math.sin(a);
+    svgParts.push(`<text x="${labelX}" y="${labelY + 4}" text-anchor="middle" font-size="14" font-weight="700" fill="${d.color}">${d.name}</text>`);
+  });
+
+  // 3) 跨领域关联曲线
+  crossLinks.forEach(link => {
+    const a = posMap[link.from], b = posMap[link.to];
+    if (!a || !b) return;
+    const mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2;
+    const offX = (cx - mx) * 0.35, offY = (cy - my) * 0.35;
+    const opacity = Math.min(0.25, 0.08 + link.weight * 0.05);
+    svgParts.push(`<path d="M ${a.x} ${a.y} Q ${mx + offX} ${my + offY} ${b.x} ${b.y}" stroke="#C5B8A5" stroke-width="0.8" fill="none" opacity="${opacity}"/>`);
+  });
+
+  // 4) 同领域节点环形连线
+  domains.forEach(d => {
+    const dNodes = nodes.filter(n => n.domain === d.key);
+    for (let i = 0; i < dNodes.length; i++) {
+      const a = posMap[dNodes[i].id];
+      const b = posMap[dNodes[(i + 1) % dNodes.length].id];
+      if (a && b) {
+        svgParts.push(`<line x1="${a.x}" y1="${a.y}" x2="${b.x}" y2="${b.y}" stroke="${d.color}" stroke-width="1.5" opacity="0.25"/>`);
+      }
     }
+  });
 
-    nodeDiv.innerHTML = `
-      <div class="map-node-info">
-        <span class="map-node-domain domain-tag ${domainClass}">${node.domainName}</span>
-        <span class="map-node-title">${node.title}</span>
-      </div>
-      <span class="status-tag ${status}">${statusLabel}</span>
-    `;
-
+  // 5) 节点圆点
+  Object.entries(posMap).forEach(([id, p]) => {
+    const isSuggested = id === suggestedNodeId;
+    let fill, stroke, op;
     if (isSuggested) {
-      nodeDiv.style.background = 'var(--beige)';
-      nodeDiv.querySelector('.status-tag').textContent = '待补全';
-      nodeDiv.querySelector('.status-tag').className = 'status-tag blank';
+      fill = '#E8841C'; stroke = '#C0680C'; op = 1;
+    } else if (p.status === 'established') {
+      fill = '#5A9A8F'; stroke = '#3d7a4d'; op = 1;
+    } else if (p.status === 'consolidate') {
+      fill = '#D4A574'; stroke = '#B88A4A'; op = 1;
+    } else {
+      fill = '#E8E0D5'; stroke = '#C5B8A5'; op = 0.6;
     }
+    // 推荐节点脉冲环
+    if (isSuggested) {
+      svgParts.push(`<circle cx="${p.x}" cy="${p.y}" r="${nodeRadius + 6}" fill="none" stroke="#E8841C" stroke-width="1.5" opacity="0.3">
+        <animate attributeName="r" values="${nodeRadius + 4};${nodeRadius + 10};${nodeRadius + 4}" dur="2s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values="0.4;0.1;0.4" dur="2s" repeatCount="indefinite"/>
+      </circle>`);
+    }
+    svgParts.push(`<circle class="graph-node-circle" cx="${p.x}" cy="${p.y}" r="${nodeRadius}" fill="${fill}" stroke="${stroke}" stroke-width="2" opacity="${op}" data-node-id="${id}" data-title="${p.title}" data-domain="${p.domainName}"/>`);
+  });
 
-    mapContainer.appendChild(nodeDiv);
+  // 6) 节点缩写标签
+  Object.entries(posMap).forEach(([id, p]) => {
+    const node = nodes.find(n => n.id === id);
+    const label = node.title.length > 4 ? node.title.substring(0, 3) + '…' : node.title;
+    svgParts.push(`<text x="${p.x}" y="${p.y + nodeRadius + 14}" text-anchor="middle" font-size="8.5" fill="#aaa">${label}</text>`);
+  });
+
+  const svgStr = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">${svgParts.join('')}</svg>`;
+
+  // 图例
+  const legend = `<div class="graph-legend">
+    <span class="graph-legend-item"><span class="graph-legend-dot" style="background:#5A9A8F"></span>已掌握</span>
+    <span class="graph-legend-item"><span class="graph-legend-dot" style="background:#D4A574"></span>需巩固</span>
+    <span class="graph-legend-item"><span class="graph-legend-dot" style="background:#E8841C"></span>推荐学习</span>
+    <span class="graph-legend-item"><span class="graph-legend-dot" style="background:#E8E0D5"></span>未学习</span>
+  </div>`;
+
+  mapContainer.innerHTML = svgStr + legend;
+
+  // 节点点击 → 跳转学习
+  mapContainer.querySelectorAll('.graph-node-circle').forEach(circle => {
+    circle.addEventListener('click', function() {
+      const nodeId = this.getAttribute('data-node-id');
+      if (!nodeId) return;
+      window.showScreen('feeder');
+      setTimeout(() => {
+        if (window.selectEnergy) window.selectEnergy('normal');
+        setTimeout(() => {
+          const card = document.querySelector(`.node-card[data-node-id="${nodeId}"]`);
+          if (card) {
+            card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            card.style.transition = 'box-shadow 0.4s';
+            card.style.boxShadow = '0 0 0 4px #D4A574';
+            setTimeout(() => { card.style.boxShadow = ''; }, 3000);
+          }
+        }, 500);
+      }, 300);
+    });
+
+    // tooltip
+    circle.addEventListener('mouseenter', function(e) {
+      const title = this.getAttribute('data-title');
+      const domain = this.getAttribute('data-domain');
+      let tip = document.getElementById('graph-tooltip');
+      if (!tip) {
+        tip = document.createElement('div');
+        tip.id = 'graph-tooltip';
+        tip.className = 'graph-tooltip';
+        mapContainer.appendChild(tip);
+      }
+      tip.textContent = `${domain} · ${title}`;
+      tip.style.opacity = '1';
+    });
+    circle.addEventListener('mousemove', function(e) {
+      const tip = document.getElementById('graph-tooltip');
+      if (tip) {
+        const rect = mapContainer.getBoundingClientRect();
+        tip.style.left = (e.clientX - rect.left) + 'px';
+        tip.style.top = (e.clientY - rect.top) + 'px';
+      }
+    });
+    circle.addEventListener('mouseleave', function() {
+      const tip = document.getElementById('graph-tooltip');
+      if (tip) tip.style.opacity = '0';
+    });
   });
 }
 
@@ -6313,6 +7189,105 @@ async function validateBlindSpotCheck(node, userAnswer) {
   const probesHit = probes.filter(p => userAnswer.includes(p));
   
   return probesHit.length >= 3 || probesHit.length >= Math.floor(probes.length * 0.6);
+}
+
+// ==================== 闭环改进：回扫验证 + 路径推荐 ====================
+
+let _recommendedNextNodeId = null;
+
+function checkRescanPrompt() {
+  const data = knowledgeData.length > 0 ? knowledgeData : (window.knowledgeData || []);
+  if (knowledgeData.length === 0 && data.length > 0) knowledgeData = data;
+  const map = JSON.parse(localStorage.getItem('cognitiveMap') || '{}');
+  const completedCount = data.filter(n => {
+    const p = map[n.id];
+    return (typeof p === 'object' && p.completed) || p === 'mastered';
+  }).length;
+
+  const promptEl = document.getElementById('rescan-prompt');
+  if (!promptEl) return;
+  const countEl = document.getElementById('rescan-completed-count');
+  if (countEl) countEl.textContent = completedCount;
+
+  // 完成 >= 3 个节点且未回扫过时显示提示
+  const hasRescanned = localStorage.getItem('hasRescanned') === 'true';
+  if (completedCount >= 3 && !hasRescanned) {
+    promptEl.style.display = 'block';
+  }
+}
+
+function gotoRescan() {
+  localStorage.setItem('hasRescanned', 'true');
+  const promptEl = document.getElementById('rescan-prompt');
+  if (promptEl) promptEl.style.display = 'none';
+  // 保存回扫前的分数
+  const scores = (window.getDomainScores && window.getDomainScores()) || {};
+  localStorage.setItem('scoresBeforeRescan', JSON.stringify(scores));
+  if (window.showScreen) window.showScreen('scanner');
+  setTimeout(() => {
+    if (window.initScanner) window.initScanner();
+  }, 300);
+}
+
+function showNextNodeRecommendation(completedNode) {
+  const data = knowledgeData.length > 0 ? knowledgeData : (window.knowledgeData || []);
+  if (knowledgeData.length === 0 && data.length > 0) knowledgeData = data;
+  const map = JSON.parse(localStorage.getItem('cognitiveMap') || '{}');
+
+  // 优先推荐同领域未完成的节点
+  let nextNode = data.find(n =>
+    n.domainName === completedNode.domainName &&
+    n.id !== completedNode.id &&
+    !(typeof map[n.id] === 'object' && map[n.id].completed) &&
+    map[n.id] !== 'mastered'
+  );
+
+  // 如果同领域都完成了，推荐最弱领域
+  if (!nextNode) {
+    const scores = (window.getDomainScores && window.getDomainScores()) || {};
+    const sorted = DOMAINS.map(d => ({ domain: d, score: scores[d] || 0 })).sort((a, b) => a.score - b.score);
+    for (const s of sorted) {
+      nextNode = data.find(n =>
+        n.domainName === s.domain &&
+        !(typeof map[n.id] === 'object' && map[n.id].completed) &&
+        map[n.id] !== 'mastered'
+      );
+      if (nextNode) break;
+    }
+  }
+
+  // 如果全部完成，不显示推荐
+  if (!nextNode) {
+    const promptEl = document.getElementById('next-node-prompt');
+    if (promptEl) promptEl.style.display = 'none';
+    return;
+  }
+
+  _recommendedNextNodeId = nextNode.id;
+  const promptEl = document.getElementById('next-node-prompt');
+  const textEl = document.getElementById('next-node-text');
+  if (promptEl && textEl) {
+    const sameDomain = nextNode.domainName === completedNode.domainName;
+    textEl.innerHTML = sameDomain
+      ? `继续深入【${nextNode.domainName}】：下一个节点「${nextNode.title}」`
+      : `拓展新领域【${nextNode.domainName}】：推荐学习「${nextNode.title}」`;
+    promptEl.style.display = 'block';
+  }
+}
+
+function gotoNextNode() {
+  if (!_recommendedNextNodeId) return;
+  const nodeId = _recommendedNextNodeId;
+  const promptEl = document.getElementById('next-node-prompt');
+  if (promptEl) promptEl.style.display = 'none';
+  // 滚动到推荐节点卡片
+  const card = document.querySelector(`.node-card[data-node-id="${nodeId}"]`);
+  if (card) {
+    card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    card.style.transition = 'box-shadow 0.4s';
+    card.style.boxShadow = '0 0 0 4px #5A9A8F';
+    setTimeout(() => { card.style.boxShadow = ''; }, 3000);
+  }
 }
 
 // 完成节点学习
@@ -6894,6 +7869,11 @@ function advanceStep(nodeId, energy, stepNum) {
     refreshCogMapNode(nodeId);
     dispatchProgressUpdate();
     showToast(`🎉 完成！你建立了【${n.domainName}】的一个认知节点`);
+    // 闭环改进：回扫验证 + 路径推荐
+    setTimeout(() => {
+      checkRescanPrompt();
+      showNextNodeRecommendation(n);
+    }, 1500);
     return;
   }
 
