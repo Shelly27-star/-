@@ -774,6 +774,139 @@ html, body {
   margin-bottom: 24px;
 }
 
+/* 5 域诊断独立卡片面板 */
+.diagnosis-panel {
+  background: linear-gradient(135deg, #FAF7F2 0%, #F5F0E8 100%);
+  border: 2px solid #D4A574;
+  border-radius: 14px;
+  padding: 24px 28px;
+  margin-bottom: 20px;
+  animation: diagSlideIn 0.4s ease;
+}
+@keyframes diagSlideIn {
+  from { opacity: 0; transform: translateY(-12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.diagnosis-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+.diagnosis-header h3 {
+  font-size: 17px;
+  font-weight: 700;
+  color: #333;
+  margin: 0;
+}
+.diagnosis-progress {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+  color: #888;
+}
+.diag-dots {
+  display: flex;
+  gap: 6px;
+}
+.diag-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #E5DDD0;
+  transition: all 0.3s;
+}
+.diag-dot.active {
+  background: #D4A574;
+  transform: scale(1.2);
+}
+.diag-dot.done {
+  background: #5A9A8F;
+}
+.diagnosis-domain-label {
+  display: inline-block;
+  padding: 4px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+.diagnosis-question {
+  font-size: 16px;
+  font-weight: 600;
+  color: #2C2C2C;
+  line-height: 1.6;
+  margin-bottom: 18px;
+  padding: 14px 18px;
+  background: rgba(255,255,255,0.7);
+  border-radius: 10px;
+  border-left: 4px solid #D4A574;
+}
+.diagnosis-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.diag-option {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 14px 16px;
+  background: #fff;
+  border: 2px solid #E5DDD0;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: left;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #444;
+}
+.diag-option:hover {
+  border-color: #D4A574;
+  background: #FFF8F0;
+  transform: translateY(-2px);
+  box-shadow: 0 3px 10px rgba(212,165,116,0.15);
+}
+.diag-option.selected {
+  border-color: #D4A574;
+  background: linear-gradient(135deg, #FFF8F0 0%, #FAF0E0 100%);
+}
+.diag-option-letter {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #F0E8D8;
+  color: #8A7B5B;
+  font-size: 13px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+.diag-option:hover .diag-option-letter,
+.diag-option.selected .diag-option-letter {
+  background: #D4A574;
+  color: #fff;
+}
+.diag-option-text {
+  flex: 1;
+}
+.diag-feedback {
+  margin-top: 14px;
+  padding: 12px 16px;
+  background: rgba(90,154,143,0.1);
+  border-radius: 8px;
+  font-size: 13px;
+  color: #4A6B5E;
+  line-height: 1.6;
+  border-left: 3px solid #5A9A8F;
+  animation: diagSlideIn 0.3s ease;
+}
+
 /* 对话区 */
 
 .chat-box {
@@ -3104,10 +3237,25 @@ body.energy-low { background: #F8F6FC; }
           <p class="section-desc">通过对话，发现你不知道的认知维度</p>
         </div>
 
+        <!-- 5 域诊断独立卡片区域 -->
+        <div id="diagnosis-panel" class="diagnosis-panel" style="display:none;">
+          <div class="diagnosis-header">
+            <h3>🧭 5 域认知扫描</h3>
+            <div class="diagnosis-progress">
+              <span id="diag-progress-text">第 1 / 5 域</span>
+              <div class="diag-dots" id="diag-dots"></div>
+            </div>
+          </div>
+          <div class="diagnosis-domain-label" id="diag-domain-label"></div>
+          <div class="diagnosis-question" id="diag-question"></div>
+          <div class="diagnosis-options" id="diag-options"></div>
+        </div>
+
+        <!-- 认知盲区对话扫描区 -->
         <div class="chat-box" id="scanner-chat">
           <div id="scanner-progress" class="scanner-progress">
     <span>第 0/4 轮对话</span>
-    <span>已触及 0/5 个关键探针</span>
+    <span>已触及 0/5 个核心要点</span>
   </div><div class="chat-messages" id="scanner-messages"><div class="message ai-message"><div class="message-content"><p>为什么有些国家打赢了每一场战役，最后却输掉了整场战争？</p></div></div></div>
         </div>
 
@@ -3138,7 +3286,8 @@ body.energy-low { background: #F8F6FC; }
         </div>
 
         <div class="probes-section">
-          <h3 class="subsection-title">探针命中情况</h3>
+          <h3 class="subsection-title">核心要点掌握情况</h3>
+          <p style="font-size:13px;color:#999;margin-bottom:12px;">核心要点 = 判断你是否理解该话题的关键维度。触及越多，说明你的思考越全面。</p>
           <div id="probes-status"></div>
         </div>
 
@@ -3148,8 +3297,8 @@ body.energy-low { background: #F8F6FC; }
         </div>
 
         <div class="result-actions">
-          <button class="btn-primary" id="btn-fill-blindspot">补全这个盲区 →</button>
-          <button class="btn-secondary" id="btn-back-scanner">继续扫描</button>
+          <button class="btn-primary" id="btn-fill-blindspot">📖 进入学习，补全盲区 →</button>
+          <button class="btn-secondary" id="btn-back-scanner">换个话题继续扫描</button>
         </div>
       </div>
     </div>
@@ -5137,7 +5286,7 @@ function getFallbackResponse(messages) {
 
     return {
       action: 'analyze',
-      overall: `用户在${round}轮对话中触及了${probesHit.length}/${node.probes.length}个关键探针。`,
+      overall: `用户在${round}轮对话中触及了${probesHit.length}/${node.probes.length}个核心要点。`,
       probesHit: probesHit,
       blindSpots: blindSpots.length > 0 ? blindSpots : ['无明显盲区'],
       suggestedNode: node.id
@@ -5325,7 +5474,7 @@ function addMessage(text, isUser, isError = false) {
 function updateProgress() {
   const roundInfo = `第 ${scannerState.round}/${scannerState.maxRounds} 轮对话`;
   const probesHitCount = scannerState.probesHit ? scannerState.probesHit.length : 0;
-  const probeInfo = `已触及 ${probesHitCount}/${scannerState.node?.probes?.length || 5} 个关键探针`;
+  const probeInfo = `已触及 ${probesHitCount}/${scannerState.node?.probes?.length || 5} 个核心要点`;
 
   let progressDiv = document.getElementById('scanner-progress');
   if (!progressDiv) {
@@ -5469,7 +5618,7 @@ function startNewTopic() {
 
 对话规则：
 1. 每次用户回答后，你需要判断是否需要继续追问
-2. 如果用户的回答过于简单、偏离主题、或没有触及关键探针，请提出针对性的追问
+2. 如果用户的回答过于简单、偏离主题、或没有触及核心要点，请提出针对性的追问
 3. 如果用户回答已经触及 3 个以上探针，或对话已进行 4 轮，请结束对话并给出分析
 4. 追问要具体、有引导性，帮助用户深入思考
 
@@ -5659,7 +5808,7 @@ function analyzeFallback() {
   const blindSpots = probesMiss.slice(0, 2).map(p => `你在 '${p}' 维度存在认知空白`);
 
   return {
-    overall: `用户在${scannerState.round}轮对话中，触及了${probesHit.length}/${node.probes.length}个关键探针。`,
+    overall: `用户在${scannerState.round}轮对话中，触及了${probesHit.length}/${node.probes.length}个核心要点。`,
     probesHit: probesHit,
     blindSpots: blindSpots.length > 0 ? blindSpots : ['无明显盲区，已掌握关键概念'],
     suggestedNode: node.id
@@ -5702,11 +5851,20 @@ function renderProbesStatus(probesHit) {
     const probeDiv = document.createElement('div');
     probeDiv.className = 'probe-status';
     probeDiv.innerHTML = `
-      <span class="probe-name">${probe}</span>
-      <span class="probe-tag ${isHit ? 'hit' : 'miss'}">${isHit ? '命中' : '未命中'}</span>
+      <span class="probe-name">${isHit ? '✅' : '⬜'} ${probe}</span>
+      <span class="probe-tag ${isHit ? 'hit' : 'miss'}">${isHit ? '已触及' : '未触及'}</span>
     `;
     probesContainer.appendChild(probeDiv);
   });
+
+  // 如果有未触及的要点，增加学习引导提示
+  const missCount = allProbes.length - probesHit.length;
+  if (missCount > 0) {
+    const hint = document.createElement('div');
+    hint.style.cssText = 'margin-top:12px;padding:10px 14px;background:rgba(230,112,40,0.08);border-radius:8px;font-size:13px;color:#c95a18;line-height:1.5;';
+    hint.innerHTML = `💡 你有 <strong>${missCount}</strong> 个核心要点未触及，这正是你的认知盲区所在。点击下方按钮进入学习，针对性补全这些盲区。`;
+    probesContainer.appendChild(hint);
+  }
 }
 
 function renderCognitiveMap(suggestedNodeId) {
@@ -6943,7 +7101,7 @@ const PLATFORM_RULES = [
     traits: '信息传播极快，情绪化强，事实核查难度大' }
 ];
 
-function showAnalysisResult(show) {
+function toggleNutritionistResult(show) {
   const result = document.getElementById('analysis-result');
   result.classList.toggle('show', show);
 }
@@ -6989,7 +7147,7 @@ function setLearnable(learnable) {
 }
 
 function resetAnalysis() {
-  showAnalysisResult(false);
+  toggleNutritionistResult(false);
   document.getElementById('nutritionist-input').value = '';
   const linkInput = document.getElementById('nutritionist-link');
   if (linkInput) linkInput.value = '';
@@ -7118,7 +7276,7 @@ async function analyzeContent() {
     hint.textContent = '分析服务暂时不可用，请稍后重试';
     hint.style.color = 'var(--danger)';
     hint.style.display = 'block';
-    showAnalysisResult(false);
+    toggleNutritionistResult(false);
   }
 }
 
@@ -7138,7 +7296,7 @@ function renderAnalysisResult(result) {
 
   document.getElementById('recommendation-text').textContent = result.recommendation || '无法提供具体建议';
 
-  showAnalysisResult(true);
+  toggleNutritionistResult(true);
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -7205,25 +7363,49 @@ function getStreak() {
   return streak;
 }
 
-// ==================== 5 域诊断流程 ====================
+// ==================== 5 域诊断流程（独立卡片 UI） ====================
 
 let diagState = { round: 0, results: {}, quiz: null };
+const DIAG_DOMAIN_COLORS = {
+  '政治学': '#5a9a8f', '军事学': '#c0703a', '历史学': '#7a6a9a', '哲学': '#5a7a9a', '金融学': '#e67028'
+};
 
 async function startDiagnosis() {
   diagState = { round: 0, results: {}, quiz: null };
-  if (typeof window.addMessage !== 'function') {
-    alert('扫描页未就绪');
-    return;
-  }
-  window.addMessage('🧭 欢迎进入 5 域认知扫描。我会用 5 道题了解你的思维偏好，没有对错之分，选你真实的直觉就好。', false);
   try {
     const res = await Promise.resolve({ok:true, json: () => Promise.resolve(window.__QUIZ_DATA__ || [])});
     diagState.quiz = await res.json();
   } catch (e) {
-    window.addMessage('⚠️ 诊断题库加载失败，请检查 ', false, true);
+    alert('⚠️ 诊断题库加载失败');
     return;
   }
-  setTimeout(() => askNextDomain(), 1200);
+  if (!diagState.quiz || Object.keys(diagState.quiz).length === 0) {
+    alert('⚠️ 诊断题库为空');
+    return;
+  }
+  // 显示诊断面板，隐藏聊天区
+  const panel = document.getElementById('diagnosis-panel');
+  const chatBox = document.getElementById('scanner-chat');
+  const toolbar = document.querySelector('.scanner-toolbar');
+  const inputArea = document.querySelector('.chat-input');
+  if (panel) panel.style.display = 'block';
+  if (chatBox) chatBox.style.display = 'none';
+  if (toolbar) toolbar.style.display = 'none';
+  if (inputArea) inputArea.style.display = 'none';
+  // 渲染进度点
+  renderDiagDots();
+  askNextDomain();
+}
+
+function renderDiagDots() {
+  const dotsContainer = document.getElementById('diag-dots');
+  if (!dotsContainer) return;
+  dotsContainer.innerHTML = '';
+  DOMAINS.forEach((d, i) => {
+    const dot = document.createElement('div');
+    dot.className = 'diag-dot' + (i === diagState.round ? ' active' : '') + (i < diagState.round ? ' done' : '');
+    dotsContainer.appendChild(dot);
+  });
 }
 
 function askNextDomain() {
@@ -7235,24 +7417,42 @@ function askNextDomain() {
     return askNextDomain();
   }
   const q = questions[0];
-  const energy = localStorage.getItem('currentEnergy') || 'high';
-  const hint = energy === 'low' ? '（轻量判断）' : energy === 'high' ? '（深度思辨）' : '';
 
-  let text = `\n📚 第 ${diagState.round + 1} 域：${domain} ${hint}\n\n${q.question}\n\n`;
+  // 更新进度
+  const progressText = document.getElementById('diag-progress-text');
+  if (progressText) progressText.textContent = `第 ${diagState.round + 1} / ${DOMAINS.length} 域`;
+  renderDiagDots();
+
+  // 领域标签
+  const labelEl = document.getElementById('diag-domain-label');
+  if (labelEl) {
+    const color = DIAG_DOMAIN_COLORS[domain] || '#D4A574';
+    labelEl.textContent = `📚 ${domain}`;
+    labelEl.style.background = color + '20';
+    labelEl.style.color = color;
+  }
+
+  // 问题
+  const qEl = document.getElementById('diag-question');
+  if (qEl) qEl.textContent = q.question;
+
+  // 选项卡片
+  const optionsEl = document.getElementById('diag-options');
+  if (!optionsEl) return;
+  optionsEl.innerHTML = '';
   q.options.forEach((opt, i) => {
     const letter = String.fromCharCode(65 + i);
-    text += `${letter}. ${opt.text}\n`;
+    const btn = document.createElement('button');
+    btn.className = 'diag-option';
+    btn.innerHTML = `<span class="diag-option-letter">${letter}</span><span class="diag-option-text">${opt.text}</span>`;
+    btn.onclick = () => selectDiagOption(letter);
+    optionsEl.appendChild(btn);
   });
-  text += `\n回复 A / B / C / D 即可`;
-  window.addMessage(text, false);
 }
 
-function handleDiagnosisAnswer(userInput) {
-  if (!diagState.quiz) return false;
-  if (diagState.round >= DOMAINS.length) return false;
-
-  const letter = (userInput || '').trim().toUpperCase().charAt(0);
-  if (!['A', 'B', 'C', 'D'].includes(letter)) return false;
+function selectDiagOption(letter) {
+  if (!diagState.quiz || diagState.round >= DOMAINS.length) return;
+  if (!['A', 'B', 'C', 'D'].includes(letter)) return;
 
   const domain = DOMAINS[diagState.round];
   const q = (diagState.quiz[domain] || [])[0];
@@ -7264,16 +7464,39 @@ function handleDiagnosisAnswer(userInput) {
   setDomainScore(domain, score);
   diagState.results[domain] = { score, tendency, insight };
 
-  // ✅ 反馈改为认知倾向分析，不再说"对错"
-  let feedback = `\n${domain} 认知画像：${tendency}\n💡 ${insight}\n`;
-  window.addMessage(feedback, false);
+  // 高亮选中选项
+  document.querySelectorAll('.diag-option').forEach((el, i) => {
+    el.classList.toggle('selected', String.fromCharCode(65 + i) === letter);
+  });
+
+  // 显示反馈
+  const optionsEl = document.getElementById('diag-options');
+  let feedbackEl = document.querySelector('.diag-feedback');
+  if (!feedbackEl) {
+    feedbackEl = document.createElement('div');
+    feedbackEl.className = 'diag-feedback';
+    optionsEl.parentNode.insertBefore(feedbackEl, optionsEl.nextSibling);
+  }
+  feedbackEl.innerHTML = `<strong>${tendency}</strong><br>💡 ${insight}`;
+
+  // 禁用选项，防止重复点击
+  document.querySelectorAll('.diag-option').forEach(el => el.style.pointerEvents = 'none');
 
   diagState.round++;
   if (diagState.round >= DOMAINS.length) {
-    setTimeout(() => finishDiagnosis(), 1200);
+    setTimeout(() => finishDiagnosis(), 1500);
   } else {
-    setTimeout(() => askNextDomain(), 1200);
+    setTimeout(() => askNextDomain(), 1500);
   }
+}
+
+function handleDiagnosisAnswer(userInput) {
+  // 兼容旧接口：如果用户在输入框打 A/B/C/D，转给卡片处理
+  if (!diagState.quiz) return false;
+  if (diagState.round >= DOMAINS.length) return false;
+  const letter = (userInput || '').trim().toUpperCase().charAt(0);
+  if (!['A', 'B', 'C', 'D'].includes(letter)) return false;
+  selectDiagOption(letter);
   return true;
 }
 
@@ -7285,34 +7508,64 @@ function finishDiagnosis() {
     info: diagState.results[d] || {}
   })).sort((a, b) => a.score - b.score);
 
-  let summary = '📋 **5 域认知画像**\n\n';
-  sorted.forEach((s, i) => {
-    const filled = Math.floor(s.score / 20);
-    const bar = '▓'.repeat(filled) + '░'.repeat(5 - filled);
-    const tendency = s.info.tendency ? ` · ${s.info.tendency}` : '';
-    summary += `${i + 1}. ${s.domain} ${bar}${tendency}\n`;
-  });
   const weakest = sorted[0];
-  summary += `\n🎯 **最需拓展的领域**：${weakest.domain}`;
-  if (weakest.info.insight) summary += `\n💡 ${weakest.info.insight}`;
-  summary += `\n📖 **推荐学习**：从「${weakest.domain}」的入门节点开始`;
-  summary += `\n\n🚀 自动跳转到「学习」页面...`;
+  const panel = document.getElementById('diagnosis-panel');
+  if (panel) {
+    let html = `
+      <div class="diagnosis-header">
+        <h3>📋 5 域认知画像</h3>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0;">`;
+    sorted.forEach((s, i) => {
+      const color = DIAG_DOMAIN_COLORS[s.domain] || '#999';
+      const pct = Math.round(s.score / 100 * 100);
+      const tendency = s.info.tendency ? ` · ${s.info.tendency}` : '';
+      html += `
+        <div style="padding:12px 14px;background:#fff;border-radius:8px;border-left:3px solid ${color};">
+          <div style="font-size:13px;font-weight:600;color:${color};margin-bottom:4px;">${i + 1}. ${s.domain}${tendency}</div>
+          <div style="height:6px;background:#F0E8D8;border-radius:3px;overflow:hidden;">
+            <div style="height:100%;width:${pct}%;background:${color};border-radius:3px;transition:width 0.6s;"></div>
+          </div>
+        </div>`;
+    });
+    html += `</div>`;
+    html += `
+      <div style="padding:14px 16px;background:rgba(230,112,40,0.1);border-radius:8px;border-left:3px solid #e67028;margin-top:12px;">
+        <div style="font-size:14px;font-weight:600;color:#c95a18;margin-bottom:4px;">🎯 最需拓展：${weakest.domain}</div>
+        <div style="font-size:13px;color:#666;line-height:1.6;">${weakest.info.insight || '建议从该领域入门节点开始学习'}</div>
+      </div>
+      <div style="text-align:center;margin-top:18px;">
+        <button class="btn-primary" onclick="gotoFeederFromDiag()" style="padding:10px 28px;font-size:15px;">前往学习「${weakest.domain}」→</button>
+      </div>`;
+    panel.innerHTML = html;
+  }
+}
 
-  window.addMessage(summary, false);
-
+function gotoFeederFromDiag() {
+  const scores = getDomainScores();
+  const sorted = DOMAINS.map(d => ({ domain: d, score: scores[d] || 0 })).sort((a, b) => a.score - b.score);
+  const weakest = sorted[0].domain;
+  // 恢复聊天区
+  const panel = document.getElementById('diagnosis-panel');
+  const chatBox = document.getElementById('scanner-chat');
+  const toolbar = document.querySelector('.scanner-toolbar');
+  const inputArea = document.querySelector('.chat-input');
+  if (panel) panel.style.display = 'none';
+  if (chatBox) chatBox.style.display = 'block';
+  if (toolbar) toolbar.style.display = 'flex';
+  if (inputArea) inputArea.style.display = 'flex';
+  // 跳转学习页
+  if (window.showScreen) {
+    window.showScreen('feeder');
+  } else {
+    document.querySelector('[data-screen="feeder"]')?.click();
+  }
   setTimeout(() => {
-    if (window.showScreen) {
-      window.showScreen('feeder');
-    } else {
-      document.querySelector('[data-screen="feeder"]')?.click();
+    if (window.selectEnergy) {
+      window.selectEnergy('normal');
+      setTimeout(() => renderRecommendedNode(weakest), 600);
     }
-    setTimeout(() => {
-      if (window.selectEnergy) {
-        window.selectEnergy('normal');
-        setTimeout(() => renderRecommendedNode(sorted[0].domain), 600);
-      }
-    }, 300);
-  }, 2500);
+  }, 300);
 }
 
 function renderRecommendedNode(domain) {
