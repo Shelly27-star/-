@@ -211,6 +211,19 @@ html, body {
   stroke-linejoin: round;
 }
 
+/* 按钮内联线条 SVG 图标 */
+.btn-line-icon {
+  width: 16px;
+  height: 16px;
+  vertical-align: -3px;
+  margin-right: 4px;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
 .small-label {
   font-size: 13px;
   color: var(--text-secondary);
@@ -3281,7 +3294,7 @@ body.energy-low { background: #F8F6FC; }
         <!-- 5 域诊断独立卡片区域 -->
         <div id="diagnosis-panel" class="diagnosis-panel" style="display:none;">
           <div class="diagnosis-header">
-            <h3>🧭 5 域认知扫描</h3>
+            <h3><svg class="title-line-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9"/><path d="M12 7 L14 12 L12 17 L10 12 Z"/></svg> 5 域认知扫描</h3>
             <div class="diagnosis-progress">
               <span id="diag-progress-text">第 1 / 5 域</span>
               <div class="diag-dots" id="diag-dots"></div>
@@ -3301,7 +3314,7 @@ body.energy-low { background: #F8F6FC; }
         </div>
 
         <div class="scanner-toolbar">
-          <button class="btn-diagnosis" id="btn-start-diagnosis" onclick="window.startDiagnosis &amp;&amp; window.startDiagnosis()">🧭 5 域认知扫描（5 道题）</button>
+          <button class="btn-diagnosis" id="btn-start-diagnosis" onclick="window.startDiagnosis &amp;&amp; window.startDiagnosis()"><svg class="btn-line-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9"/><path d="M12 7 L14 12 L12 17 L10 12 Z"/></svg> 5 域认知扫描（5 道题）</button>
           <span class="toolbar-hint">没有对错之分，选出你的真实直觉即可</span>
         </div>
 
