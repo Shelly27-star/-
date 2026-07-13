@@ -2190,8 +2190,22 @@ html, body {
 }
 
 .recent-empty-icon {
-  font-size: 40px;
-  margin-bottom: 12px;
+  width: 40px;
+  height: 40px;
+  margin: 0 auto 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.recent-empty-icon svg {
+  width: 32px;
+  height: 32px;
+  stroke: #8a6d3b;
+  stroke-width: 1.5;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .recent-empty-text {
@@ -3618,7 +3632,7 @@ body.energy-low { background: #F8F6FC; }
           <h3 class="subsection-title">最近学习记录</h3>
           <div class="recent-list" id="recent-list">
       <div class="recent-empty">
-        <div class="recent-empty-icon">🌱</div>
+        <div class="recent-empty-icon"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 22 V12"/><path d="M12 12 C6 12 3 9 3 5 C9 5 12 8 12 12 Z"/><path d="M12 12 C18 12 21 9 21 5 C15 5 12 8 12 12 Z"/></svg></div>
         <p class="recent-empty-text">还没有学习记录</p>
         <p class="recent-empty-hint">去「学习」页面开始你的第一个认知节点吧</p>
         <button class="recent-empty-btn" onclick="window.showScreen('feeder')">前往学习</button>
@@ -8689,7 +8703,7 @@ function renderRecentActivity() {
   if (recent.length === 0) {
     container.innerHTML = `
       <div class="recent-empty">
-        <div class="recent-empty-icon">🌱</div>
+        <div class="recent-empty-icon"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 22 V12"/><path d="M12 12 C6 12 3 9 3 5 C9 5 12 8 12 12 Z"/><path d="M12 12 C18 12 21 9 21 5 C15 5 12 8 12 12 Z"/></svg></div>
         <p class="recent-empty-text">还没有学习记录</p>
         <p class="recent-empty-hint">去「学习」页面开始你的第一个认知节点吧</p>
         <button class="recent-empty-btn" onclick="window.showScreen('feeder')">前往学习</button>
