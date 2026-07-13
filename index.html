@@ -2372,7 +2372,8 @@ html, body {
 .legend-unread { background:#E5E5E5; } .legend-read { background:#D4A574; } .legend-mastered { background:#2A6E3E; }
 .cog-map-hint { font-size:12px; color:#999; margin-bottom:16px; }
 .cog-map-grid { display:grid; grid-template-columns:80px repeat(3,1fr); gap:8px; font-size:12px; }
-.cog-map-axis { display:flex; align-items:center; justify-content:center; color:#888; font-weight:600; font-size:11px; }
+.cog-map-axis { display:flex; align-items:center; justify-content:center; gap:3px; color:#888; font-weight:600; font-size:11px; }
+.cog-map-axis .axis-line-icon { width:13px; height:13px; stroke:#8a6d3b; stroke-width:1.5; fill:none; stroke-linecap:round; stroke-linejoin:round; }
 .cog-map-cell { min-height:60px; border:1px solid #F0F0F0; border-radius:8px; padding:6px; display:flex; flex-direction:column; gap:4px; background:#FAFAFA; }
 .cog-map-node { background:#E5E5E5; color:#666; padding:4px 6px; border-radius:4px; font-size:11px; cursor:pointer; transition:all .2s; line-height:1.3; border:none; text-align:left; font-family:inherit; width:100%; }
 .cog-map-node:hover { transform:translateY(-1px); box-shadow:0 2px 4px rgba(0,0,0,.06); }
@@ -7780,11 +7781,16 @@ function renderCogMap() {
   if (!grid) return;
   const data = knowledgeData.length > 0 ? knowledgeData : (window.knowledgeData || []);
   if (knowledgeData.length === 0 && data.length > 0) knowledgeData = data;
-  const energyLabels = { high: '⚡ 精力充沛', normal: '🌊 状态正常', low: '🌙 有点疲惫' };
+  const energyIcons = {
+    high:   '<svg class="axis-line-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 2 L4 14 H11 L11 22 L20 10 H13 Z"/></svg>',
+    normal: '<svg class="axis-line-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 12 Q7 6 12 12 T21 12"/></svg>',
+    low:    '<svg class="axis-line-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 14 A8 8 0 1 1 10 5 A6 6 0 0 0 20 14 Z"/></svg>'
+  };
+  const energyLabels = { high: '精力充沛', normal: '状态正常', low: '有点疲惫' };
   const domains = ['政治学', '军事学', '历史学', '哲学', '金融学'];
   const energies = ['high', 'normal', 'low'];
   let html = '<div class="cog-map-axis"></div>';
-  energies.forEach(e => { html += `<div class="cog-map-axis">${energyLabels[e]}</div>`; });
+  energies.forEach(e => { html += `<div class="cog-map-axis">${energyIcons[e]}${energyLabels[e]}</div>`; });
   domains.forEach(domain => {
     html += `<div class="cog-map-axis">${domain}</div>`;
     energies.forEach(energy => {
