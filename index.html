@@ -5106,121 +5106,66 @@ body.energy-low { background: #F8F6FC; }
   "政治学": [
     {
       "id": "pol-d1",
-      "question": "当你看到小区电梯里有人抽烟，业主委员会征集签名禁烟但响应者寥寥。你怎么看？",
+      "question": "《资治通鉴》记载了无数朝代更迭，《君主论》剖析了权力获取的逻辑。如果你是一位新上任的管理者，接手一个混乱的团队，你会首先做什么？",
       "options": [
-        { "text": "大家没公德心", "score": 0 },
-        { "text": "业主委员会应该加大宣传", "score": 25 },
-        { "text": "这是集体行动困境，需要激励机制设计", "score": 75 },
-        { "text": "我可以用奥尔森的框架设计一个签名激励方案", "score": 100 }
+        { "text": "立规矩、严执行，先建立秩序再说", "score": 25, "tendency": "权威型 · 马基雅维利式", "insight": "你倾向于先建立权威与秩序，相信'畏惧比爱戴更可靠'。这是《君主论》的经典路径。", "recommendNode": "pol-power-dynamics" },
+        { "text": "找关键人物沟通，建立共识再推进", "score": 50, "tendency": "共识型 · 卢梭式", "insight": "你相信合法权力来自共识与契约，倾向通过协商凝聚集体意志。这是《社会契约论》的思路。", "recommendNode": "pol-civic-virtue" },
+        { "text": "先不动，观察一个月摸清利益格局", "score": 75, "tendency": "观察型 · 务实主义", "insight": "你习惯先理解局势再行动，不急于下手。这正是《资治通鉴》中谋臣的典型思维。", "recommendNode": "pol-international-order" },
+        { "text": "重新设计激励机制，让个人利益与团队目标对齐", "score": 100, "tendency": "制度设计型 · 奥尔森式", "insight": "你本能地从制度层面思考问题，关注激励结构如何塑造行为。这是最深层的政治学思维。", "recommendNode": "pol-institution-shapes-behavior" }
       ],
-      "probes": ["搭便车", "激励机制", "集体收益"]
-    },
-    {
-      "id": "pol-d2",
-      "question": "公司里同岗位的两个部门，做事风格天差地别，最可能的原因是？",
-      "options": [
-        { "text": "两个部门的人不一样", "score": 0 },
-        { "text": "公司文化不同", "score": 25 },
-        { "text": "考核制度塑造了不同行为", "score": 75 },
-        { "text": "可以通过重新设计制度来改变部门行为", "score": 100 }
-      ],
-      "probes": ["制度", "考核", "行为塑造"]
+      "probes": ["权力", "共识", "制度", "激励"]
     }
   ],
   "军事学": [
     {
       "id": "mil-d1",
-      "question": "海湾战争美军 100 小时结束地面战，却没有占领伊拉克。你怎么看？",
+      "question": "《孙子兵法》说'上兵伐谋'，《战争论》说'战争是政治的延续'，《论持久战》讲以弱胜强。当你面对一个实力远超你的竞争对手，你的第一反应是？",
       "options": [
-        { "text": "美军兵力不足", "score": 0 },
-        { "text": "占领不划算", "score": 25 },
-        { "text": "战争是政治的延续，目的达成即收手", "score": 75 },
-        { "text": "可以用'大战略'原理分析任何决策的目的与手段", "score": 100 }
+        { "text": "正面交锋，狭路相逢勇者胜", "score": 25, "tendency": "决战型 · 克劳塞维茨式", "insight": "你信奉集中力量、寻求决战。克劳塞维茨会认同你——关键是在决定性时刻倾尽全力。", "recommendNode": "mil-grand-strategy" },
+        { "text": "避其锋芒，找弱点长期消耗", "score": 75, "tendency": "持久战型 · 毛泽东式", "insight": "你擅长以弱胜强，用时间换空间。这正是《论持久战》的核心思路——弱者用消耗战拖垮强者。", "recommendNode": "mil-deterrence" },
+        { "text": "不战而屈人之兵，从谋略层面取胜", "score": 100, "tendency": "谋略型 · 孙子式", "insight": "你追求最高层次的胜利——不战而胜。孙子说'上兵伐谋，其次伐交'，你天然具备这种思维。", "recommendNode": "mil-ooda-loop" },
+        { "text": "先退一步保存实力，等待对手犯错", "score": 50, "tendency": "战略忍耐型", "insight": "你懂得克制与等待，不急于行动。这在军事上叫'战略定力'，但需注意不要错过时机。", "recommendNode": "mil-asymmetric-warfare" }
       ],
-      "probes": ["政治目的", "大战略", "克劳塞维茨"]
-    },
-    {
-      "id": "mil-d2",
-      "question": "阿富汗塔利班没有空军没有坦克却控制全国。你认为为什么？",
-      "options": [
-        { "text": "美军不想打了", "score": 0 },
-        { "text": "塔利班得到了外部支持", "score": 25 },
-        { "text": "弱者用非对称战争避实击虚、长期消耗", "score": 75 },
-        { "text": "可以用非对称思路分析资源不对等的任何竞争", "score": 100 }
-      ],
-      "probes": ["非对称", "避实击虚", "长期消耗"]
+      "probes": ["谋略", "消耗", "非对称", "战略"]
     }
   ],
   "历史学": [
     {
       "id": "hist-d1",
-      "question": "为什么键盘是 QWERTY 排列而不是更高效的字母顺序？",
+      "question": "《史记》讲'以史为鉴'，《全球通史》讲文明演进。当你发现公司里一个存在多年的流程明显低效，你会？",
       "options": [
-        { "text": "一直就是这样", "score": 0 },
-        { "text": "早期打字机为了防卡键", "score": 50 },
-        { "text": "这是路径依赖的典型案例", "score": 75 },
-        { "text": "可以用路径依赖分析今天所有'习惯'", "score": 100 }
+        { "text": "立即废除，效率优先", "score": 25, "tendency": "革命型 · 破旧立新", "insight": "你倾向打破旧秩序，重建新规则。历史上的革命者多如此，但也要警惕'砸碎一切'的代价。", "recommendNode": "hist-tech-revolution" },
+        { "text": "先搞清楚它为什么存在，再决定", "score": 100, "tendency": "历史主义型 · 司马迁式", "insight": "你本能地追问'来龙去脉'，理解事物为何如此。这是历史学最核心的思维——一切存在都有其历史原因。", "recommendNode": "hist-counterfactual" },
+        { "text": "保留但逐步优化，控制切换成本", "score": 75, "tendency": "改良型 · 路径依赖", "insight": "你懂得'路径依赖'——旧制度虽低效，但切换成本巨大。渐进改良往往比革命更可行。", "recommendNode": "hist-path-dependence" },
+        { "text": "找准时机一次性切换，承受短期阵痛", "score": 50, "tendency": "断腕型 · 文明转型", "insight": "你愿意承受短期代价换取长期收益。历史上的文明转型往往需要这样的决断力。", "recommendNode": "hist-civilization-cycle" }
       ],
-      "probes": ["路径依赖", "切换成本", "锁定效应"]
-    },
-    {
-      "id": "hist-d2",
-      "question": "1945 年广岛，美国教科书强调'结束战争的关键一击'，日本教科书强调'平民悲剧'。你怎么看？",
-      "options": [
-        { "text": "美国是对的", "score": 0 },
-        { "text": "立场不同而已", "score": 25 },
-        { "text": "历史是叙事，胜利者写历史，谁来讲决定你看到什么", "score": 75 },
-        { "text": "我看任何'历史定论'都会本能追问：谁讲的？还有什么版本？", "score": 100 }
-      ],
-      "probes": ["叙事", "权力", "史观"]
+      "probes": ["路径依赖", "革命", "改良", "时机"]
     }
   ],
   "哲学": [
     {
       "id": "phi-d1",
-      "question": "有人说'狼吃羊是自然规律，所以人类也应该弱肉强食'。这句话有什么问题？",
+      "question": "王阳明说'知行合一'，老子说'无为而无不为'，《易经》讲变化之道。面对一个重大人生抉择，朋友们的建议各不相同，你会？",
       "options": [
-        { "text": "没什么问题", "score": 0 },
-        { "text": "人类社会不一样", "score": 25 },
-        { "text": "从'是'推不出'应该'，这是休谟之叉", "score": 75 },
-        { "text": "任何论证都该先区分事实与价值", "score": 100 }
+        { "text": "听从直觉，相信第一感觉", "score": 25, "tendency": "直觉主义 · 感性型", "insight": "你信任内在感受，认为身体比头脑更诚实。这是一种美学式的人生态度——直觉本身就是一种智慧。", "recommendNode": "phi-aesthetics" },
+        { "text": "列利弊清单，理性计算后决定", "score": 75, "tendency": "理性主义 · 功利计算", "insight": "你习惯用理性拆解决策，区分事实与价值。这接近休谟的思路——理性是激情的奴隶，但计算仍有意义。", "recommendNode": "phi-hume-fork" },
+        { "text": "顺应自然，不强求特定结果", "score": 50, "tendency": "道家 · 无为型", "insight": "你信奉'无为而无不为'，不强求结果反而得到最好的结果。这是《道德经》的核心智慧。", "recommendNode": "phi-existence-essence" },
+        { "text": "先行动起来，在实践中验证答案", "score": 100, "tendency": "知行合一型 · 阳明心学", "insight": "你不等想明白再动，而是在行动中理解。这正是王阳明'知行合一'的精髓——行是知之始。", "recommendNode": "phi-free-will" }
       ],
-      "probes": ["事实", "价值", "休谟之叉"]
-    },
-    {
-      "id": "phi-d2",
-      "question": "你说过'我就是个内向的人所以不想社交'。这句话的逻辑漏洞？",
-      "options": [
-        { "text": "没什么问题", "score": 0 },
-        { "text": "其实可以尝试", "score": 25 },
-        { "text": "存在先于本质，你的本质是你活出来的，不是预设的", "score": 75 },
-        { "text": "我会区分'本质如此'和'习惯如此'", "score": 100 }
-      ],
-      "probes": ["存在", "本质", "选择"]
+      "probes": ["直觉", "理性", "无为", "知行合一"]
     }
   ],
   "金融学": [
     {
       "id": "fin-d1",
-      "question": "25 岁开始每月存 2000 和 35 岁开始每月存 4000，到 60 岁哪个多？差距多大？",
+      "question": "周金涛说'人生发财靠康波'，厉以宁讲'中国经济转型'。如果你有一笔积蓄要投资，你的风格是？",
       "options": [
-        { "text": "10 年差距", "score": 0 },
-        { "text": "差几十万", "score": 25 },
-        { "text": "差 300 万以上，复利的核心是时间", "score": 75 },
-        { "text": "知识、健康、人际关系都有复利效应", "score": 100 }
+        { "text": "重仓高风险资产，追求超额回报", "score": 25, "tendency": "激进型 · 高风险偏好", "insight": "你愿意承担高风险换取高收益。这本身没有对错，但需理解'高收益必然对应高风险'的铁律。", "recommendNode": "fin-risk-return" },
+        { "text": "分散配置，平衡风险与收益", "score": 75, "tendency": "稳健型 · 风险对冲", "insight": "你懂得分散风险，不把鸡蛋放在一个篮子里。这是现代金融学的核心原则——风险与收益的对价。", "recommendNode": "fin-valuation" },
+        { "text": "只投保本产品，本金安全第一", "score": 50, "tendency": "保守型 · 本金优先", "insight": "你把安全放在第一位。这很合理，但需明白：通胀也在悄悄侵蚀你的本金——安全也有隐性成本。", "recommendNode": "fin-compound-interest" },
+        { "text": "研究经济周期，在低位时布局", "score": 100, "tendency": "周期型 · 周金涛式", "insight": "你从宏观周期角度思考投资，而非追涨杀跌。这正是《涛动周期论》的精髓——顺势而为。", "recommendNode": "fin-economic-cycle" }
       ],
-      "probes": ["复利", "时间", "越早越好"]
-    },
-    {
-      "id": "fin-d2",
-      "question": "P2P 暴雷前都承诺 10%-15% 年化、'银行级风控'。崩盘后看，问题在哪？",
-      "options": [
-        { "text": "平台太坏", "score": 0 },
-        { "text": "监管没跟上", "score": 25 },
-        { "text": "高收益必然对应高风险，谁在承担风险是关键", "score": 75 },
-        { "text": "我看到'高收益低风险'会本能识别风险被谁转嫁", "score": 100 }
-      ],
-      "probes": ["风险", "收益", "对价"]
+      "probes": ["风险偏好", "复利", "周期", "对价"]
     }
   ]
 }
@@ -6560,9 +6505,15 @@ function showAnalysisResult(result) {
 
 function learnBlindSpot(nodeId) {
   if (!nodeId) return;
+  const data = knowledgeData.length > 0 ? knowledgeData : (window.knowledgeData || []);
+  const node = data.find(n => n.id === nodeId);
   window.showScreen('feeder');
   setTimeout(() => {
-    if (window.selectEnergy) window.selectEnergy('normal');
+    if (window.selectEnergy) {
+      const energy = node ? node.energy : 'normal';
+      const domainFilter = node ? node.domainName : undefined;
+      window.selectEnergy(energy, domainFilter);
+    }
     setTimeout(() => {
       const card = document.querySelector(`.node-card[data-node-id="${nodeId}"]`);
       if (card) {
@@ -7918,7 +7869,7 @@ function loadFeederKnowledge() {
     .catch(err => console.error('❌ feeder 知识库加载失败', err));
 }
 
-function selectEnergy(energy) {
+function selectEnergy(energy, domainFilter) {
   document.querySelectorAll('.energy-btn').forEach(b => b.classList.remove('active'));
   const btn = document.querySelector(`[data-energy="${energy}"]`);
   if (btn) btn.classList.add('active');
@@ -7931,7 +7882,12 @@ function selectEnergy(energy) {
   const data = knowledgeData.length > 0 ? knowledgeData : (window.knowledgeData || []);
   if (knowledgeData.length === 0 && data.length > 0) knowledgeData = data;
 
-  const matched = data.filter(n => n.energy === energy);
+  let matched = data.filter(n => n.energy === energy);
+
+  // 领域过滤（从诊断跳转时传入）
+  if (domainFilter) {
+    matched = matched.filter(n => n.domainName === domainFilter);
+  }
 
   // ✅ 按能力分数排序（分数低的领域优先）
   const scores = (window.getDomainScores && window.getDomainScores()) || {};
@@ -8398,6 +8354,14 @@ function askNextDomain() {
   }
   const q = questions[0];
 
+  // 打乱选项顺序（Fisher-Yates 洗牌）
+  const shuffled = q.options.slice();
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  diagState.shuffledOptions = shuffled;
+
   // 更新进度
   const progressText = document.getElementById('diag-progress-text');
   if (progressText) progressText.textContent = `第 ${diagState.round + 1} / ${DOMAINS.length} 域`;
@@ -8416,37 +8380,37 @@ function askNextDomain() {
   const qEl = document.getElementById('diag-question');
   if (qEl) qEl.textContent = q.question;
 
-  // 选项卡片
+  // 选项卡片（使用打乱后的顺序）
   const optionsEl = document.getElementById('diag-options');
   if (!optionsEl) return;
   optionsEl.innerHTML = '';
-  q.options.forEach((opt, i) => {
+  shuffled.forEach((opt, i) => {
     const letter = String.fromCharCode(65 + i);
     const btn = document.createElement('button');
     btn.className = 'diag-option';
     btn.innerHTML = `<span class="diag-option-letter">${letter}</span><span class="diag-option-text">${opt.text}</span>`;
-    btn.onclick = () => selectDiagOption(letter);
+    btn.onclick = () => selectDiagOption(i);
     optionsEl.appendChild(btn);
   });
 }
 
-function selectDiagOption(letter) {
+function selectDiagOption(idx) {
   if (!diagState.quiz || diagState.round >= DOMAINS.length) return;
-  if (!['A', 'B', 'C', 'D'].includes(letter)) return;
+  if (!diagState.shuffledOptions || idx >= diagState.shuffledOptions.length) return;
 
   const domain = DOMAINS[diagState.round];
-  const q = (diagState.quiz[domain] || [])[0];
-  const opt = q.options[letter.charCodeAt(0) - 65];
-  const score = opt ? opt.score : 0;
-  const tendency = (opt && opt.tendency) ? opt.tendency : '直觉型 · 待探索';
-  const insight = (opt && opt.insight) ? opt.insight : '你的回答已记录，将在后续学习中进一步探索。';
+  const opt = diagState.shuffledOptions[idx];
+  const score = opt.score || 0;
+  const tendency = opt.tendency || '直觉型 · 待探索';
+  const insight = opt.insight || '你的回答已记录，将在后续学习中进一步探索。';
+  const recommendNode = opt.recommendNode || null;
 
   setDomainScore(domain, score);
-  diagState.results[domain] = { score, tendency, insight };
+  diagState.results[domain] = { score, tendency, insight, recommendNode };
 
   // 高亮选中选项
   document.querySelectorAll('.diag-option').forEach((el, i) => {
-    el.classList.toggle('selected', String.fromCharCode(65 + i) === letter);
+    el.classList.toggle('selected', i === idx);
   });
 
   // 显示反馈
@@ -8476,7 +8440,8 @@ function handleDiagnosisAnswer(userInput) {
   if (diagState.round >= DOMAINS.length) return false;
   const letter = (userInput || '').trim().toUpperCase().charAt(0);
   if (!['A', 'B', 'C', 'D'].includes(letter)) return false;
-  selectDiagOption(letter);
+  const idx = letter.charCodeAt(0) - 65;
+  selectDiagOption(idx);
   return true;
 }
 
@@ -8489,11 +8454,21 @@ function finishDiagnosis() {
   })).sort((a, b) => a.score - b.score);
 
   const weakest = sorted[0];
+
+  // 查找推荐节点标题
+  const data = knowledgeData.length > 0 ? knowledgeData : (window.knowledgeData || []);
+  let recommendTitle = '';
+  if (weakest.info.recommendNode) {
+    const rNode = data.find(n => n.id === weakest.info.recommendNode);
+    if (rNode) recommendTitle = rNode.title;
+  }
+
   const panel = document.getElementById('diagnosis-panel');
   if (panel) {
     let html = `
       <div class="diagnosis-header">
         <h3>📋 5 域认知画像</h3>
+        <p style="font-size:12px;color:#999;margin-top:4px;">以下选项没有对错之分，仅反映你的认知偏好与思维倾向</p>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0;">`;
     sorted.forEach((s, i) => {
@@ -8511,8 +8486,9 @@ function finishDiagnosis() {
     html += `</div>`;
     html += `
       <div style="padding:14px 16px;background:rgba(230,112,40,0.1);border-radius:8px;border-left:3px solid #e67028;margin-top:12px;">
-        <div style="font-size:14px;font-weight:600;color:#c95a18;margin-bottom:4px;">🎯 最需拓展：${weakest.domain}</div>
+        <div style="font-size:14px;font-weight:600;color:#c95a18;margin-bottom:4px;">🎯 最需拓展：${weakest.domain}${weakest.info.tendency ? '（' + weakest.info.tendency + '）' : ''}</div>
         <div style="font-size:13px;color:#666;line-height:1.6;">${weakest.info.insight || '建议从该领域入门节点开始学习'}</div>
+        ${recommendTitle ? `<div style="font-size:13px;color:#c95a18;margin-top:8px;">📖 推荐学习：「${recommendTitle}」</div>` : ''}
       </div>
       <div style="text-align:center;margin-top:18px;">
         <button class="btn-primary" onclick="gotoFeederFromDiag()" style="padding:10px 28px;font-size:15px;">前往学习「${weakest.domain}」→</button>
@@ -8523,8 +8499,16 @@ function finishDiagnosis() {
 
 function gotoFeederFromDiag() {
   const scores = getDomainScores();
-  const sorted = DOMAINS.map(d => ({ domain: d, score: scores[d] || 0 })).sort((a, b) => a.score - b.score);
-  const weakest = sorted[0].domain;
+  const sorted = DOMAINS.map(d => ({
+    domain: d,
+    score: scores[d] || 0,
+    info: diagState.results[d] || {}
+  })).sort((a, b) => a.score - b.score);
+  const weakest = sorted[0];
+
+  // 获取推荐节点 ID
+  let recommendNodeId = weakest.info.recommendNode;
+
   // 恢复聊天区
   const panel = document.getElementById('diagnosis-panel');
   const chatBox = document.getElementById('scanner-chat');
@@ -8534,16 +8518,41 @@ function gotoFeederFromDiag() {
   if (chatBox) chatBox.style.display = 'block';
   if (toolbar) toolbar.style.display = 'flex';
   if (inputArea) inputArea.style.display = 'flex';
+
   // 跳转学习页
   if (window.showScreen) {
     window.showScreen('feeder');
   } else {
     document.querySelector('[data-screen="feeder"]')?.click();
   }
+
   setTimeout(() => {
+    const data = knowledgeData.length > 0 ? knowledgeData : (window.knowledgeData || []);
+    let node = data.find(n => n.id === recommendNodeId);
+
+    // 如果推荐节点不存在，兜底找该领域入门节点
+    if (!node) {
+      node = data.filter(n => n.domainName === weakest.domain && n.level === '入门')
+        .sort((a, b) => a.duration - b.duration)[0];
+    }
+    if (!node) {
+      // 最终兜底
+      if (window.selectEnergy) window.selectEnergy('normal');
+      return;
+    }
+
+    // 用推荐节点的 energy 筛选 + 领域过滤，确保只显示目标领域的节点
     if (window.selectEnergy) {
-      window.selectEnergy('normal');
-      setTimeout(() => renderRecommendedNode(weakest), 600);
+      window.selectEnergy(node.energy, weakest.domain);
+      setTimeout(() => {
+        const card = document.querySelector(`.node-card[data-node-id="${node.id}"]`);
+        if (card) {
+          card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          card.style.transition = 'box-shadow 0.4s';
+          card.style.boxShadow = '0 0 0 4px #E8841C';
+          setTimeout(() => { card.style.boxShadow = ''; }, 3000);
+        }
+      }, 600);
     }
   }, 300);
 }
