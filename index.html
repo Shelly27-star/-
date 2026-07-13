@@ -2039,10 +2039,23 @@ html, body {
 }
 
 .recommend-icon {
-  font-size: 28px;
+  width: 28px;
+  height: 28px;
   flex-shrink: 0;
-  line-height: 1;
   margin-top: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.recommend-icon svg {
+  width: 22px;
+  height: 22px;
+  stroke: #8a6d3b;
+  stroke-width: 1.5;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .recommend-content {
@@ -3590,7 +3603,7 @@ body.energy-low { background: #F8F6FC; }
         <div class="progress-section recommend-section">
           <h3 class="subsection-title">推荐下一步</h3>
           <div class="recommend-card" id="recommend-card">
-            <div class="recommend-icon">🎯</div>
+            <div class="recommend-icon"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="2" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="22" y2="12"/></svg></div>
             <div class="recommend-content" id="recommend-content">
     <div class="recommend-domain">政治学 · 尚未开始</div>
     <div class="recommend-node">建议学习：「集体行动困境」</div>
