@@ -5996,10 +5996,14 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
 
   document.getElementById('btn-fill-blindspot')?.addEventListener('click', () => {
-    showScreen('feeder');
-    setTimeout(() => {
-      window.feederInitNodeMode(currentSuggestedNode);
-    }, 100);
+    if (currentSuggestedNode) {
+      learnBlindSpot(currentSuggestedNode);
+    } else {
+      showScreen('feeder');
+      setTimeout(() => {
+        if (window.selectEnergy) window.selectEnergy('normal');
+      }, 300);
+    }
   });
 
   document.getElementById('btn-back-scanner')?.addEventListener('click', () => {
@@ -6499,6 +6503,11 @@ function showAnalysisResult(result) {
   renderProbesStatus(result.probesHit || []);
 
   renderCognitiveMap(result.suggestedNode);
+
+  // ✅ 保存当前推荐节点，供"进入学习"按钮使用
+  if (result.suggestedNode) {
+    setCurrentSuggestedNode(result.suggestedNode);
+  }
 
   window.showScreen('scanner-result');
 }
